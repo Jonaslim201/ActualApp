@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
+
+//Used to hold the document in Firestore
 public class holdDocument {
 
     private DocumentSnapshot userDocument;

@@ -1,7 +1,16 @@
+import java.util.regex.Pattern.compile
+
 buildscript {
     dependencies {
         classpath("com.google.gms:google-services:4.4.1")
     }
+
+
+    repositories{
+        google()
+        mavenCentral()
+    }
+
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

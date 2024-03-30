@@ -59,60 +59,60 @@
             android:textStyle="bold">
         </androidx.appcompat.widget.AppCompatTextView>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputUsername"
-            style="@style/parent"
-            android:layout_marginTop="8dp"
-            app:boxStrokeWidth="0sp"
-            android:textColorHint="@color/lightGrey2">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputUsername"
+        style="@style/parent"
+        android:layout_marginTop="8dp"
+        app:boxStrokeWidth="0sp"
+        android:textColorHint="@color/lightGrey2">
 
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username"
-                style="@style/loginRegisterText"
-                android:hint="USERNAME"
-                android:fontFamily="@font/montserrat"
-                android:drawablePadding="8sp"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textSize="13sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username"
+            style="@style/loginRegisterText"
+            android:hint="USERNAME"
+            android:fontFamily="@font/montserrat"
+            android:drawablePadding="8sp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textSize="13sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputPassword"
-            style="@style/parent"
-            app:hintAnimationEnabled="false"
-            app:boxStrokeWidth="0sp"
-            android:layout_marginTop="20dp"
-            android:textColorHint="@color/lightGrey2">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputPassword"
+        style="@style/parent"
+        app:hintAnimationEnabled="false"
+        app:boxStrokeWidth="0sp"
+        android:layout_marginTop="20dp"
+        android:textColorHint="@color/lightGrey2">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password"
-                style="@style/loginRegisterText"
-                android:hint="PASSWORD"
-                android:fontFamily="@font/montserrat"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textSize="13sp" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            style="@style/loginRegisterText"
+            android:hint="PASSWORD"
+            android:fontFamily="@font/montserrat"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:textSize="13sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
-            android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:minWidth="200sp"
-            android:background="@drawable/login_edittext_bar"
-            android:backgroundTint="@color/someOtherTeal"
-            android:onClick="onLoginClick"
-            android:padding="8dp"
-            android:text="Login"
-            android:textColor="@color/darkModeViolet"
-            app:initialCornerAngle="27dp"
-            app:spinning_bar_color="@color/white"
-            app:spinning_bar_padding="2dp"
-            app:spinning_bar_width="6dp" />
+    <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:minWidth="200sp"
+        android:background="@drawable/login_edittext_bar"
+        android:backgroundTint="@color/someOtherTeal"
+        android:onClick="onLoginClick"
+        android:padding="8dp"
+        android:text="Login"
+        android:textColor="@color/darkModeViolet"
+        app:initialCornerAngle="27dp"
+        app:spinning_bar_color="@color/white"
+        app:spinning_bar_padding="2dp"
+        app:spinning_bar_width="6dp" />
 
         <TextView
             android:layout_width="match_parent"

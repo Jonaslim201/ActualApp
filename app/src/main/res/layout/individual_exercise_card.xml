@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/exerciseCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7sp"
+        android:layout_marginEnd="7sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp"
+        android:backgroundTint="@color/blackCard"
+        android:minHeight="135sp"
+        android:clickable="true"
+        app:cardElevation="50sp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingClass">
+
+        <TextView
+            android:id="@+id/exerciseName"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="top|start"
+            android:text="Exercise Name"
+            android:textAlignment="gravity"
+            android:textColor="@color/orange"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="15sp"
+            android:layout_marginEnd="10sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/commonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="57sp"
+            android:layout_marginEnd="10sp"
+            android:text="Primary Muscle Groups: "
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+        <TextView
+            android:id="@+id/exercisePriMuscleGroups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="78sp"
+            android:layout_marginEnd="10sp"
+            android:textSize="13sp"
+            android:text="Muscle groups here"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+
+        <ImageView
+            android:id="@+id/exercisePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:gravity="center|end"
+            android:layout_gravity="center|end"
+            android:maxWidth="100sp"
+            android:maxHeight="100sp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/inclinebenchsitup"
+            android:layout_marginEnd="15sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

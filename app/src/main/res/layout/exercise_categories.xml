@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blackBackgroundColor">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="left"
+        android:text="Pick your"
+        android:textColor="@color/matteWhite"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textView"
+        style="@style/headerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="30dp"
+        android:text="Category"
+        android:textColor="@color/matteWhite"
+        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.513" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="96dp"
+        android:gravity="left"
+        android:text="Make muscles, not excuses"
+        android:textColor="@color/matteWhite"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/categoryGrid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.451" />
+
+    <GridLayout
+        android:id="@+id/categoryGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="@dimen/layoutMarginTopCategories"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="185dp"
+        android:columnCount="3"
+        android:rowCount="3"
+        android:useDefaultMargins="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.355">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewAbs"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewAbsText"
+                style="@style/exerciseCategoryText"
+                android:text="Abs"
+                android:textSize="25dp"
+                />
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="28" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewBack"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewBackText"
+                style="@style/exerciseCategoryText"
+                android:text="Back"
+                android:textSize="25dp" />
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="25" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewBiceps"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewBicepsText"
+                style="@style/exerciseCategoryText"
+                android:text="Biceps"
+                android:textSize="25dp" />
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="24" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewCalf"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewCalfText"
+                style="@style/exerciseCategoryText"
+                android:text="Calf"
+                android:textSize="25dp" />
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="9" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewChest"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewChestText"
+                style="@style/exerciseCategoryText"
+                android:text="Chest"
+                android:textSize="25dp" />
+
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="37" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewForearms"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewForearmsText"
+                style="@style/exerciseCategoryText"
+                android:text="Forearms"
+                android:textSize="20dp" />
+
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="4" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewLegs"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewLegsText"
+                style="@style/exerciseCategoryText"
+                android:text="Legs"
+                android:textSize="25dp" />
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="36" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewShoulders"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewShouldersText"
+                style="@style/exerciseCategoryText"
+                android:text="Shoulders"
+                android:textSize="20dp" />
+
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="28" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewTriceps"
+            style="@style/exercisesCardView"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="30dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cardViewTricepsText"
+                style="@style/exerciseCategoryText"
+                android:text="Triceps"
+                android:textSize="23dp" />
+
+
+            <TextView
+                style="@style/exercisesNumber"
+                android:text="23" />
+
+        </androidx.cardview.widget.CardView>
+
+    </GridLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
