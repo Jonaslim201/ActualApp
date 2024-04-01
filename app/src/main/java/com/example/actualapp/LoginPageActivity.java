@@ -57,7 +57,7 @@ public class LoginPageActivity extends AppCompatActivity{
                 animationButton.morphDoneAndRevert();
 
                 //Accesses Firestore class to login user
-                Firestore.loginUser(user, LoginPageActivity.this, new LoginAndRegisterCallBack() {
+                Firestore.loginUser(user, LoginPageActivity.this, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success){

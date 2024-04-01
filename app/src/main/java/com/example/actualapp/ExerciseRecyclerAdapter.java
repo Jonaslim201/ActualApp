@@ -3,6 +3,7 @@ package com.example.actualapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,13 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     int N;
     private ArrayList<Exercise> exercises;
     private Context activity;
+    private String category;
 
-    public ExerciseRecyclerAdapter(ArrayList<Exercise> exercises, Context activity){
+    public ExerciseRecyclerAdapter(ArrayList<Exercise> exercises, Context activity, String category){
         this.N = exercises.size();
         this.exercises = exercises;
         this.activity = activity;
+        this.category = category;
     }
 
     public void setExercises(ArrayList<Exercise> exercises){
@@ -59,7 +62,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             @Override
             public void onClick(View v) {
                 Intent newActivity = new Intent(activity, ExerciseActivity.class);
-                newActivity.putExtra("exerciseName", currExercise.getName());
+                Bundle names = new Bundle();
+                names.putString("exerciseName",  currExercise.getName());
+                names.putString("category", category);
+                newActivity.putExtras(names);
                 Toast.makeText(holder.itemView.getContext(), "button clicked.", Toast.LENGTH_SHORT).show();
                 activity.startActivity(newActivity);
             }

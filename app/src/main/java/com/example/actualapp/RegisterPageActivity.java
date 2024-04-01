@@ -58,7 +58,7 @@ public class RegisterPageActivity extends AppCompatActivity {
                 animationButton.morphDoneAndRevert();
 
                 //Accesses Firestore class to register user
-                Firestore.registerUser(user, RegisterPageActivity.this, new LoginAndRegisterCallBack() {
+                Firestore.registerUser(user, RegisterPageActivity.this, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success) {
@@ -91,10 +91,22 @@ public class RegisterPageActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                registerButton.setEnabled(username.getText().toString().trim().length() > 0
-                        && email.getText().toString().trim().length() > 0
-                        && password.getText().toString().trim().length() > 0
-                        && number.getText().toString().trim().length() > 0);
+                String usernameText = Objects.requireNonNull(username.getText()).toString().trim();
+                String emailText = Objects.requireNonNull(email.getText()).toString().trim();
+                String passwordText = Objects.requireNonNull(password.getText()).toString().trim();
+                String numberText = Objects.requireNonNull(number.getText()).toString().trim();
+
+                boolean isValid = usernameText.length() > 0 && emailText.length() > 0 && passwordText.length() > 0 && numberText.length() > 0;
+                boolean isUsernamePasswordSame = usernameText.equals(passwordText);
+
+                if (isUsernamePasswordSame) {
+                    // Username and password are the same, disable the register button
+                    registerButton.setEnabled(false);
+                    // Show a message
+                    Toast.makeText(RegisterPageActivity.this, "Username cannot be the same as password", Toast.LENGTH_SHORT).show();
+                } else {
+                    registerButton.setEnabled(isValid);
+                }
 
             }
 

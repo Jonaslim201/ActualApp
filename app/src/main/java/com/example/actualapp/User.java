@@ -1,5 +1,7 @@
 package com.example.actualapp;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -17,8 +19,8 @@ public class User {
     //Reference to the user document in Firestore
     private static DocumentSnapshot userDoc;
 
-    //ArrayList of the user's workouts
-    private static ArrayList<Workout> workouts;
+    private static ArrayList<DocumentReference> friends;
+    private static ArrayList<String> friendRequests;
 
     public User(String username, String password, String email, String id){
         User.username = username;
@@ -70,16 +72,7 @@ public class User {
         return id;
     }
 
-    public static void addWorkout(Workout e) {
-        User.workouts.add(e);
-    }
 
-    public static void setWorkouts(ArrayList<Workout> workouts) {
-        User.workouts = workouts;
-    }
 
-    public static ArrayList<Workout> getWorkouts() {
-        return workouts;
-    }
 
 }

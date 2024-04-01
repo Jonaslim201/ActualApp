@@ -16,13 +16,14 @@ import java.util.ArrayList;
 public class CategoryActivity extends AppCompatActivity {
 
     private ArrayList<Exercise> exercises;
+    private String category;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Getting the category name the user clicked from the Intent declared in ExerciseCategoriesActivity class
         Intent intent = getIntent();
-        String category = intent.getStringExtra("categoryName");
+        category = intent.getStringExtra("categoryName");
 
         //Access Firestore to retrieve the list of exercises for the category chosen
         Firestore.getExercises(CategoryActivity.this, category, new ExerciseCallBack(){
@@ -45,7 +46,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         //RecyclerView bs
         RecyclerView view = findViewById(R.id.recyclerView);
-        ExerciseRecyclerAdapter adapter = new ExerciseRecyclerAdapter(exercises, CategoryActivity.this);
+        ExerciseRecyclerAdapter adapter = new ExerciseRecyclerAdapter(exercises, CategoryActivity.this, category);
 
         view.setLayoutManager(new LinearLayoutManager(this));
         view.setAdapter(adapter);
@@ -71,6 +72,8 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 profileButton.setBackground(getDrawable(R.drawable.circular_button));
+                startActivity(new Intent(CategoryActivity.this, FeedActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
             }
         });
     }
