@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.Firestore.ExerciseFirestore;
+import com.example.actualapp.exerciseRelated.Exercise;
+import com.example.actualapp.exerciseRelated.ExerciseCallBack;
+
 import java.util.ArrayList;
 
 public class CategoryActivity extends AppCompatActivity {
@@ -26,7 +30,7 @@ public class CategoryActivity extends AppCompatActivity {
         category = intent.getStringExtra("categoryName");
 
         //Access Firestore to retrieve the list of exercises for the category chosen
-        Firestore.getExercises(CategoryActivity.this, category, new ExerciseCallBack(){
+        ExerciseFirestore.getExercises(CategoryActivity.this, category, new ExerciseCallBack(){
             @Override
             public void onSuccessResult(ArrayList<Exercise> exercise) {
                 setExercises(exercise);

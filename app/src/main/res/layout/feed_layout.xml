@@ -5,6 +5,18 @@
     android:background="@color/blackBackgroundColor2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/newFriendReq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/friendId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Newest friend req here"
+        android:textColor="@color/matteWhite"/>
+
+
+
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/friendId"
         android:layout_width="wrap_content"
@@ -25,6 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Add friend">
-
     </Button>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

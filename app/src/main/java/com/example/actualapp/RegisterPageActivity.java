@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.example.actualapp.Firestore.RegisterFirestore;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -58,7 +60,7 @@ public class RegisterPageActivity extends AppCompatActivity {
                 animationButton.morphDoneAndRevert();
 
                 //Accesses Firestore class to register user
-                Firestore.registerUser(user, RegisterPageActivity.this, new FirestoreCallBack() {
+                RegisterFirestore.registerUser(user, RegisterPageActivity.this, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success) {
@@ -69,7 +71,7 @@ public class RegisterPageActivity extends AppCompatActivity {
                             Toast.makeText(RegisterPageActivity.this, "Login unsuccessful.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }, true);
+                });
             }
         });
     }

@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.exerciseRelated.Exercise;
+
 import java.util.ArrayList;
 
 

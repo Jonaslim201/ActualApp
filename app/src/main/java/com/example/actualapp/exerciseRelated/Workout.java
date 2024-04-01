@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.exerciseRelated;
 
 
 //Subclass for Exercise, one Object is one Workout session the user did

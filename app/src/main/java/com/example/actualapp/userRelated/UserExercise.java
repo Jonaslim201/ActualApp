@@ -1,10 +1,11 @@
-package com.example.actualapp;
+package com.example.actualapp.userRelated;
 
+import com.example.actualapp.exerciseRelated.Workout;
 import com.google.firebase.firestore.CollectionReference;
 
 import java.util.ArrayList;
 
-public class UserExercise extends User{
+public class UserExercise extends User {
     private static CollectionReference workoutsDoc;
     private static CollectionReference leaderboardDoc;
 

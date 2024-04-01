@@ -1,7 +1,5 @@
 package com.example.actualapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -12,7 +10,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.example.actualapp.Firestore.LoginFirestore;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -57,7 +58,7 @@ public class LoginPageActivity extends AppCompatActivity{
                 animationButton.morphDoneAndRevert();
 
                 //Accesses Firestore class to login user
-                Firestore.loginUser(user, LoginPageActivity.this, new FirestoreCallBack() {
+                LoginFirestore.loginUser(user, LoginPageActivity.this, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success){
@@ -69,7 +70,7 @@ public class LoginPageActivity extends AppCompatActivity{
                             Toast.makeText(LoginPageActivity.this, "Login unsuccessful.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }, false);
+                });
             }
         });
     }

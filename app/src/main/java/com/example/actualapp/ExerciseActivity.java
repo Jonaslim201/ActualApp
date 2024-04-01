@@ -12,7 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.actualapp.Firestore.ExerciseFirestore;
+import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.example.actualapp.exerciseRelated.Workout;
 import com.google.android.material.textfield.TextInputEditText;
+
+import com.example.actualapp.userRelated.UserExercise;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,7 +97,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 int reps = Integer.parseInt(numOfReps.getText().toString());
 
                 Workout workout = new Workout(exerciseName,weight, dateTextEdit.getText().toString(), reps);
-                Firestore.insertWorkout(category, workout, new FirestoreCallBack() {
+                ExerciseFirestore.insertWorkout(category, workout, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success){

@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.exerciseRelated;
 
 
 //Each exercise has its individual class
