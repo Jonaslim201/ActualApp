@@ -1,12 +1,14 @@
 package com.example.actualapp;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ public class ExerciseActivity extends AppCompatActivity {
     String category;
     String exerciseName;
     TextInputEditText dateTextEdit;
+    TextInputEditText timeTextEdit;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +52,24 @@ public class ExerciseActivity extends AppCompatActivity {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH,month);
                 calendar.set(Calendar.DAY_OF_MONTH,day);
-                updateLabel();
+                updateDateLabel();
+            }
+        };
+
+        TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+
+                updateTimeLabel();
             }
         };
 
         dateTextEdit = findViewById(R.id.workoutDate);
         TextInputEditText numOfReps = findViewById(R.id.numOfReps);
         TextInputEditText weightLifted = findViewById(R.id.weightLifted);
+        timeTextEdit = findViewById(R.id.workoutTime);
 
         ArrayList<Workout> allWorkouts = UserExercise.getWorkouts();
         ArrayList<Workout> currWorkouts = new ArrayList<>();
@@ -89,14 +103,22 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
+        timeTextEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TimePickerDialog(ExerciseActivity.this, time, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+            }
+        });
+
         Button addWorkout = findViewById(R.id.addWorkout);
         addWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 float weight = Float.parseFloat(weightLifted.getText().toString());
                 int reps = Integer.parseInt(numOfReps.getText().toString());
+                String dateTime = dateTextEdit.getText().toString() + " " + timeTextEdit.getText().toString();
 
-                Workout workout = new Workout(exerciseName,weight, dateTextEdit.getText().toString(), reps);
+                Workout workout = new Workout(exerciseName,weight, dateTime, reps);
                 ExerciseFirestore.insertWorkout(category, workout, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {
@@ -111,9 +133,15 @@ public class ExerciseActivity extends AppCompatActivity {
         });
     }
 
-    private void updateLabel(){
-        String myFormat="MM/dd/yy";
-        SimpleDateFormat dateFormat=new SimpleDateFormat(myFormat, Locale.ENGLISH);
-        dateTextEdit.setText(dateFormat.format(calendar.getTime()));
+    private void updateDateLabel(){
+        String dateFormat="MM/dd/yy";
+        SimpleDateFormat newDateFormat=new SimpleDateFormat(dateFormat, Locale.getDefault());
+        dateTextEdit.setText(newDateFormat.format(calendar.getTime()));
+    }
+
+    private void updateTimeLabel(){
+        String timeFormat = "HH:mm";
+        SimpleDateFormat newTimeFormat = new SimpleDateFormat(timeFormat, Locale.getDefault());
+        timeTextEdit.setText(newTimeFormat.format(calendar.getTime()));
     }
 }

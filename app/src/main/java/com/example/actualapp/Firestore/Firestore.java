@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 
 import com.example.actualapp.ExerciseCategoriesActivity;
+import com.example.actualapp.RigidBodyApp;
 import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserExercise;
 import com.example.actualapp.userRelated.UserFriends;
@@ -65,7 +66,12 @@ public class Firestore implements FirestoreCallBack {
                                                   .setUserDoc(userDoc).build();
 
             userDoc.getReference().update("friends", Collections.emptyList());
-            userDoc.getReference().update("friendRequests", Collections.emptyList());
+
+            Map<String, Object> newFriendsReqMap = new HashMap<>();
+            newFriendsReqMap.put("sent", Collections.emptyList());
+            newFriendsReqMap.put("received", Collections.emptyList());
+
+            userDoc.getReference().update("friendRequests", newFriendsReqMap);
         } else {
             User currUser = new User.UserBuilder().setUsername(user.get("username").toString())
                                                   .setPassword(user.get("password").toString())
@@ -74,22 +80,19 @@ public class Firestore implements FirestoreCallBack {
                                                   .setUserDoc(userDoc).build();
 
             ArrayList<DocumentReference> friendsList = (ArrayList<DocumentReference>) userDoc.get("friends");
-            ArrayList<Object> friendsRequests = (ArrayList<Object>) userDoc.get("friendRequests");
+            Map<String, Object> friendsRequests = (Map<String, Object>) userDoc.get("friendRequests");
 
             if (friendsList != null && !friendsList.isEmpty()){
                 UserFriends.setFriends(friendsList);
             }
 
             if (friendsRequests != null && !friendsRequests.isEmpty()){
-                FriendFirestore.initializeFriendReqListener();
-                ArrayList<DocumentReference> requests = new ArrayList<>();
-                for (Object obj:friendsRequests){
-                    if (obj instanceof DocumentReference){
-                        requests.add((DocumentReference) obj);
-                    }
-                }
-                Log.d("Firestore", requests.toString());
-                UserFriends.setFriendRequests(requests);
+                ArrayList<DocumentReference> receivedRequests = (ArrayList<DocumentReference>) friendsRequests.get("received");
+                ArrayList<DocumentReference> sentRequests = (ArrayList<DocumentReference>) friendsRequests.get("sent");
+
+                Log.d("Firestore", receivedRequests.toString());
+                UserFriends.setReceivedFriendRequests(receivedRequests);
+                UserFriends.setSentFriendRequests(sentRequests);
             }
         }
 
@@ -116,6 +119,7 @@ public class Firestore implements FirestoreCallBack {
         }
 
         callback.onFirestoreResult(true);
+        RigidBodyApp.startListeners();
         Toast.makeText(activity, "Login successful.", Toast.LENGTH_SHORT).show();
     }
 

@@ -1,9 +1,6 @@
 package com.example.actualapp.userRelated;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.ArrayList;
 
 
 //User class with static fields to allow the information to be accessed throughout the app session
@@ -17,9 +14,6 @@ public class User {
 
     //Reference to the user document in Firestore
     private static DocumentSnapshot userDoc;
-
-    private static ArrayList<DocumentReference> friends;
-    private static ArrayList<String> friendRequests;
 
     public User(UserBuilder userBuilder){
         User.username = userBuilder.username;
@@ -50,15 +44,6 @@ public class User {
 
     public static String getId() {
         return id;
-    }
-
-
-    public static void setFriends(ArrayList<DocumentReference> friends) {
-        User.friends = friends;
-    }
-
-    public static ArrayList<DocumentReference> getFriends() {
-        return friends;
     }
 
     public static class UserBuilder {

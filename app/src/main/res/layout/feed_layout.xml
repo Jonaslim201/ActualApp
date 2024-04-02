@@ -14,6 +14,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Newest friend req here"
         android:textColor="@color/matteWhite"/>
+    <Button
+        android:id="@+id/acceptButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/newFriendReq"
+        app:layout_constraintTop_toTopOf="parent"
+        android:hint="Accept"
+        android:layout_marginTop="150sp"
+        android:textColorHint="@color/matteWhite">
+    </Button>
+
+    <Button
+        android:id="@+id/rejectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/newFriendReq"
+        app:layout_constraintTop_toTopOf="parent"
+        android:hint="Reject"
+        android:layout_marginTop="100sp"
+        android:textColorHint="@color/matteWhite">
+    </Button>
 
 
 

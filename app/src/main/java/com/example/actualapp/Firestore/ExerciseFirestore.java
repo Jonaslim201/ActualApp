@@ -57,7 +57,10 @@ public class ExerciseFirestore extends Firestore{
                             highScore = workout.getWeightLifted();
                             existingWorkouts.remove(0);
                             existingWorkouts.add(0, highScore);
+                            existingWorkouts.remove(1);
+                            existingWorkouts.add(1, workout.getDateOfWorkout());
                         }
+
                         existingWorkouts.addAll(toAddWorkouts);
                         UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), existingWorkouts)
                                 .addOnSuccessListener(unused -> callBack.onFirestoreResult(true))
@@ -65,6 +68,7 @@ public class ExerciseFirestore extends Firestore{
 
                     } else {
                         toAddWorkouts.add(0,workout.getWeightLifted());
+                        toAddWorkouts.add(1, workout.getDateOfWorkout());
                         UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), toAddWorkouts)
                                 .addOnSuccessListener(unused -> callBack.onFirestoreResult(true))
                                 .addOnFailureListener(e -> callBack.onFirestoreResult(false));
