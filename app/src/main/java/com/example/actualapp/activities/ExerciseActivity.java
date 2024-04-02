@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -16,13 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.example.actualapp.LeaderboardActivity;
+import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Workout;
 import com.google.android.material.textfield.TextInputEditText;
 
-import com.example.actualapp.userRelated.UserExercise;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -31,22 +30,29 @@ import java.util.Locale;
 public class ExerciseActivity extends AppCompatActivity {
 
     final Calendar calendar = Calendar.getInstance();
+    DatePickerDialog.OnDateSetListener date;
+    TimePickerDialog.OnTimeSetListener time;
     String category;
     String exerciseName;
     TextInputEditText dateTextEdit;
     TextInputEditText timeTextEdit;
+    TextInputEditText numOfReps;
+    TextInputEditText weightLifted;
+    Button addWorkout;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Getting the exercise name the user has chosen from the ExerciseCategoriesActivity class
+        //Getting the exercise name and category the user has chosen from the ExerciseCategoriesActivity class
         Intent intent = getIntent();
         Bundle names = intent.getExtras();
         exerciseName = names.getString("exerciseName");
         category = names.getString("category");
         setContentView(R.layout.indiv_exercise_temp_layout);
 
-        DatePickerDialog.OnDateSetListener date =new DatePickerDialog.OnDateSetListener() {
+
+        //This is the setup for the popup calendar
+        date =new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int day) {
                 calendar.set(Calendar.YEAR, year);
@@ -56,7 +62,9 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         };
 
-        TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
+
+        //This is the setup for the time picker
+        time = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -66,22 +74,21 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         };
 
+        //Initialize all the textedit fields
         dateTextEdit = findViewById(R.id.workoutDate);
-        TextInputEditText numOfReps = findViewById(R.id.numOfReps);
-        TextInputEditText weightLifted = findViewById(R.id.weightLifted);
+        numOfReps = findViewById(R.id.numOfReps);
+        weightLifted = findViewById(R.id.weightLifted);
         timeTextEdit = findViewById(R.id.workoutTime);
 
-        ArrayList<Workout> allWorkouts = UserExercise.getWorkouts();
-        ArrayList<Workout> currWorkouts = new ArrayList<>();
-
-//        for (Workout workout:allWorkouts){
-//            if (workout.getName().equals());
-//        }
+        //Initialize add workout button
+        addWorkout = findViewById(R.id.addWorkout);
 
         //One textview for the exercise name testing
         TextView name = findViewById(R.id.indivExerciseName);
         name.setText(exerciseName);
         Toast.makeText(ExerciseActivity.this, category, Toast.LENGTH_SHORT).show();
+        //One textview for the exercise name testing
+
         //just one button for my Leaderboard testing
         Button leaderboardButton = findViewById(R.id.leaderboardButton);
         leaderboardButton.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +103,12 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void setOnClickListener(){
+
+        //Sets the onClickListener so that the Calender will popup
         dateTextEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +116,8 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
+
+        //Sets the onClickListener so that the Clock will popup
         timeTextEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,15 +125,24 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
-        Button addWorkout = findViewById(R.id.addWorkout);
+
+        //onClickListener for adding workout
         addWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Get weight value entered in float
                 float weight = Float.parseFloat(weightLifted.getText().toString());
+
+                //Get reps entered in integer
                 int reps = Integer.parseInt(numOfReps.getText().toString());
+
+                //Get date + time String value and concatenate them together
                 String dateTime = dateTextEdit.getText().toString() + " " + timeTextEdit.getText().toString();
 
+                //Creates a new Workout instance
                 Workout workout = new Workout(exerciseName,weight, dateTime, reps);
+
+                //Inserts the new Workout instance through Firestore
                 ExerciseFirestore.insertWorkout(category, workout, new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {

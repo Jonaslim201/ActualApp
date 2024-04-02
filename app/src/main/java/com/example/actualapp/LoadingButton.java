@@ -20,7 +20,7 @@ public class LoadingButton{
     private CircularProgressButton progressButton;
 
 
-    LoadingButton(CircularProgressButton progressButton, Context context, TextInputEditText username, TextInputEditText password){
+    public LoadingButton(CircularProgressButton progressButton, Context context, TextInputEditText username, TextInputEditText password){
         this.context = context;
         this.resources = context.getResources();
         this.progressButton = progressButton;

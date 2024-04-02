@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 
-import com.example.actualapp.ExerciseCategoriesActivity;
+import com.example.actualapp.activities.ExerciseCategoriesActivity;
 import com.example.actualapp.RigidBodyApp;
 import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserExercise;

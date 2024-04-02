@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.ExerciseRecyclerAdapter;
+import com.example.actualapp.FeedActivity;
 import com.example.actualapp.Firestore.ExerciseFirestore;
+import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Exercise;
 import com.example.actualapp.exerciseRelated.ExerciseCallBack;
 

@@ -31,7 +31,10 @@ public class ExerciseFirestore extends Firestore{
                 Map<String, Object> map = documentSnapshot.getData();
                 for(Map.Entry<String, Object> entry: map.entrySet()){
                     ArrayList<String> exercise = (ArrayList<String>) entry.getValue();
-                    exercises.add(new Exercise(exercise.get(0), exercise.get(1), exercise.get(2)));
+                    exercises.add (new Exercise.ExerciseBuilder().setName(exercise.get(0))
+                                                                 .setPriMuscleGroups(exercise.get(1))
+                                                                 .setSecMuscleGroups(exercise.get(2))
+                                                                 .Build());
                     exerciseCallBack.onSuccessResult(exercises);
                 }
             }

@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.Firestore.RegisterFirestore;
+import com.example.actualapp.LoadingButton;
+import com.example.actualapp.R;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.textfield.TextInputEditText;
 
