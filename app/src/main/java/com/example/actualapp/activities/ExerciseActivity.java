@@ -103,10 +103,11 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
+        setOnClickListeners();
 
     }
 
-    private void setOnClickListener(){
+    private void setOnClickListeners(){
 
         //Sets the onClickListener so that the Calender will popup
         dateTextEdit.setOnClickListener(new View.OnClickListener() {
