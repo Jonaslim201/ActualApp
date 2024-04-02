@@ -51,28 +51,28 @@ public class ExerciseActivity extends AppCompatActivity {
         setContentView(R.layout.indiv_exercise_temp_layout);
 
 
-        //This is the setup for the popup calendar
-        date =new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH,month);
-                calendar.set(Calendar.DAY_OF_MONTH,day);
-                updateDateLabel();
-            }
-        };
+        // //This is the setup for the popup calendar
+        // date =new DatePickerDialog.OnDateSetListener() {
+        //     @Override
+        //     public void onDateSet(DatePicker view, int year, int month, int day) {
+        //         calendar.set(Calendar.YEAR, year);
+        //         calendar.set(Calendar.MONTH,month);
+        //         calendar.set(Calendar.DAY_OF_MONTH,day);
+        //         updateDateLabel();
+        //     }
+        // };
 
 
-        //This is the setup for the time picker
-        time = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+        // //This is the setup for the time picker
+        // time = new TimePickerDialog.OnTimeSetListener() {
+        //     @Override
+        //     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        //         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        //         calendar.set(Calendar.MINUTE, minute);
 
-                updateTimeLabel();
-            }
-        };
+        //         updateTimeLabel();
+        //     }
+        // };
 
         //Initialize all the textedit fields
         dateTextEdit = findViewById(R.id.workoutDate);
@@ -137,7 +137,10 @@ public class ExerciseActivity extends AppCompatActivity {
                 int reps = Integer.parseInt(numOfReps.getText().toString());
 
                 //Get date + time String value and concatenate them together
-                String dateTime = dateTextEdit.getText().toString() + " " + timeTextEdit.getText().toString();
+                Calendar cal= Calendar.getInstance(new Locale("SG"));
+                Date dateNow=cal.getTime();
+                SimpleDateFormat format1= new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+                String dateTime=format1.format(dateNow);
 
                 //Creates a new Workout instance
                 Workout workout = new Workout(exerciseName,weight, dateTime, reps);
@@ -157,15 +160,15 @@ public class ExerciseActivity extends AppCompatActivity {
         });
     }
 
-    private void updateDateLabel(){
-        String dateFormat="MM/dd/yy";
-        SimpleDateFormat newDateFormat=new SimpleDateFormat(dateFormat, Locale.getDefault());
-        dateTextEdit.setText(newDateFormat.format(calendar.getTime()));
-    }
+    // private void updateDateLabel(){
+    //     String dateFormat="MM/dd/yy";
+    //     SimpleDateFormat newDateFormat=new SimpleDateFormat(dateFormat, Locale.getDefault());
+    //     dateTextEdit.setText(newDateFormat.format(calendar.getTime()));
+    // }
 
-    private void updateTimeLabel(){
-        String timeFormat = "HH:mm";
-        SimpleDateFormat newTimeFormat = new SimpleDateFormat(timeFormat, Locale.getDefault());
-        timeTextEdit.setText(newTimeFormat.format(calendar.getTime()));
-    }
+    // private void updateTimeLabel(){
+    //     String timeFormat = "HH:mm";
+    //     SimpleDateFormat newTimeFormat = new SimpleDateFormat(timeFormat, Locale.getDefault());
+    //     timeTextEdit.setText(newTimeFormat.format(calendar.getTime()));
+    // }
 }
