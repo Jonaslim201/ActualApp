@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.actualapp.ExerciseRecyclerAdapter;
+import com.example.actualapp.recyclerAdapters.ExerciseRecyclerAdapter;
 import com.example.actualapp.FeedActivity;
 import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.R;

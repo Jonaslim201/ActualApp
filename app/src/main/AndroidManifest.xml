@@ -77,7 +77,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LeaderboardActivity"
+        <activity android:name=".activities.LeaderboardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

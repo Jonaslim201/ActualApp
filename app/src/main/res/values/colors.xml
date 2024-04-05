@@ -26,4 +26,8 @@
     <color name="orange">#FA9244</color>
     <color name="red">#FF0000</color>
 
+    <color name="firstPlace">#FFD700</color>
+    <color name="secondPlace">#DFDBDB</color>
+    <color name="thirdPlace">#81F4B906</color>
+
 </resources>

@@ -77,7 +77,7 @@ public class FeedActivity extends AppCompatActivity {
                             Toast.makeText(FeedActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                }, acceptedId);
             }
         });
 

@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.recyclerAdapters;
 
 
 import android.content.Context;
@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.R;
 import com.example.actualapp.activities.ExerciseActivity;
 import com.example.actualapp.exerciseRelated.Exercise;
 

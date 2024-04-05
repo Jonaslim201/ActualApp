@@ -7,9 +7,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-
-import com.example.actualapp.activities.ExerciseCategoriesActivity;
 import com.example.actualapp.RigidBodyApp;
+import com.example.actualapp.activities.ExerciseCategoriesActivity;
+import com.example.actualapp.userRelated.Leaderboard;
 import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserExercise;
 import com.example.actualapp.userRelated.UserFriends;
@@ -22,7 +22,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.lang.Object;
 
 
 public class Firestore implements FirestoreCallBack {
@@ -113,6 +111,8 @@ public class Firestore implements FirestoreCallBack {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (collectionName.equals("workouts")){
                         UserExercise.setWorkoutsDoc(userDoc.getReference().collection(collectionName));
+                    } else if (collectionName.equals("leaderboards")){
+                        Leaderboard.setLeaderboard(userDoc.getReference().collection(collectionName));
                     }
                 }
             });
@@ -122,6 +122,8 @@ public class Firestore implements FirestoreCallBack {
         RigidBodyApp.startListeners();
         Toast.makeText(activity, "Login successful.", Toast.LENGTH_SHORT).show();
     }
+
+
 
     private static void createFirestoreDocuments(CollectionReference collectionRef) {
         db.runTransaction(transaction -> {
@@ -133,17 +135,17 @@ public class Firestore implements FirestoreCallBack {
     }
 
     private static void getFirestoreDocuments(QuerySnapshot querySnapshot) {
-        for (QueryDocumentSnapshot document : querySnapshot) {
-            Map<String, Object> documentData = document.getData();
-            if (documentData != null) {
-                for (Map.Entry<String, Object> entry : documentData.entrySet()) {
-                    Object value = entry.getValue();
-                    if (value instanceof ArrayList) {
-                        getFirestoreData((ArrayList<?>) value);
-                    }
-                }
-            }
-        }
+//        for (QueryDocumentSnapshot document : querySnapshot) {
+//            Map<String, Object> documentData = document.getData();
+//            if (documentData != null) {
+//                for (Map.Entry<String, Object> entry : documentData.entrySet()) {
+//                    Object value = entry.getValue();
+//                    if (value instanceof ArrayList) {
+//                        getFirestoreData((ArrayList<?>) value);
+//                    }
+//                }
+//            }
+//        }
     }
 
     private static void getFirestoreData(ArrayList<?> arrayList) {

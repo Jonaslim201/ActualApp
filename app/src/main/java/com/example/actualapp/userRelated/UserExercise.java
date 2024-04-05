@@ -7,18 +7,9 @@ import java.util.ArrayList;
 
 public class UserExercise extends User {
     private static CollectionReference workoutsDoc;
-    private static CollectionReference leaderboardDoc;
 
     //ArrayList of the user's workouts
     private static ArrayList<Workout> workouts;
-
-    public static void setLeaderboardDoc(CollectionReference leaderboardDoc) {
-        UserExercise.leaderboardDoc = leaderboardDoc;
-    }
-
-    public static CollectionReference getLeaderboardDoc() {
-        return leaderboardDoc;
-    }
 
     public static void setWorkoutsDoc(CollectionReference workoutsDoc) {
         UserExercise.workoutsDoc = workoutsDoc;

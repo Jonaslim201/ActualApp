@@ -68,9 +68,9 @@ public class LoginPageActivity extends AppCompatActivity{
                             startApp();
                         } else {
                             //If user inputs the wrong credentials cuz hes a dumbass then it reverts the button animation
-                            animationButton.revert(3000L);
                             Toast.makeText(LoginPageActivity.this, "Login unsuccessful.", Toast.LENGTH_SHORT).show();
                         }
+                        animationButton.revert(3000L);
                     }
                 });
             }

@@ -42,11 +42,12 @@ public class FriendFirestore extends Firestore {
         });
     }
 
-    public static void acceptFriendRequest(DocumentReference acceptedFriendDoc, FirestoreCallBack callBack){
+    public static void acceptFriendRequest(DocumentReference acceptedFriendDoc, FirestoreCallBack callBack, String acceptedId){
         User.getUserDoc().getReference().update("friends", FieldValue.arrayUnion(acceptedFriendDoc)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 addSelfInFriend(acceptedFriendDoc, callBack);
+                ExerciseFirestore.addedFriendLeaderboard(acceptedFriendDoc, acceptedId);
                 UserFriends.addFriend(acceptedFriendDoc);
             }
         }).addOnFailureListener(new OnFailureListener() {
