@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.exerciseRelated.Workout;
 import com.example.actualapp.userRelated.Leaderboard;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.FriendWorkout;
@@ -40,9 +41,9 @@ public class LeaderboardActivity extends AppCompatActivity {
         category = names.getString("category");
         Leaderboard.getLeaderBoardWorkouts(exerciseName, category, new WorkoutCallback() {
                     @Override
-                    public void onSuccessResult(List<FriendWorkout> workouts, boolean isEmpty) {
+                    public void onSuccessResult(List<? extends Workout> workouts, boolean isEmpty) {
                         if (!isEmpty){
-                            setWorkouts(workouts);
+                            setWorkouts((List<FriendWorkout>) workouts);
                             Log.d("Leaderboard", "workouts found");
                             Log.d("Leaderboard", workouts.toString());
                             setView();

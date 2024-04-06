@@ -45,6 +45,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    implementation("com.jjoe64:graphview:4.2.2")
     implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
 
 }

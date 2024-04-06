@@ -52,13 +52,43 @@ public class ExerciseFirestore extends Firestore{
         });
     }
 
+    public static void getWorkouts(String category, String exerciseName, WorkoutCallback callback){
+        Log.d("ExerciseFirestore", "running getWorkouts");
+        Log.d("ExerciseFirestore", exerciseName);
+        Log.d("ExerciseFirestore", category);
+        List<Workout> workouts = new ArrayList<>();
+        UserExercise.getWorkoutsDoc().document(category).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                List<?> currentWorkouts = (List<?>) documentSnapshot.get(exerciseName);
+
+                if (currentWorkouts != null && !currentWorkouts.isEmpty()){
+                    currentWorkouts.remove(0);
+                    for (Object workout:currentWorkouts){
+                        if (workout instanceof Map){
+                            Map<String, Object> mapWorkout = (Map<String, Object>) workout;
+                            float weightLifted = ((Number) mapWorkout.get("weightLifted")).floatValue();
+                            float numOfReps = ((Number) mapWorkout.get("numOfReps")).floatValue();
+
+
+                            workouts.add(new Workout(mapWorkout.get("name").toString(), weightLifted, mapWorkout.get("dateOfWorkout").toString(), (int) numOfReps));;
+                        }
+                    }
+
+                    callback.onSuccessResult(workouts, false);
+                } else {
+                    callback.onSuccessResult(null, true);
+                }
+            }
+        });
+    }
+
     public static void insertWorkout(String category, Workout workout, FirestoreCallBack callBack){
 
         UserExercise.getWorkoutsDoc().document(category).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
-                    Log.d("Checking exercise", UserExercise.getWorkoutsDoc().document(category).getPath());
                     DocumentSnapshot currCategoryDoc = task.getResult();
                     List<Object> toAddWorkouts = new ArrayList<>(Collections.singletonList(workout));
 
