@@ -21,15 +21,6 @@
         android:theme="@style/Theme.ActualApp"
         tools:targetApi="31">
 
-<!--        <activity-->
-<!--            android:name=".testClass"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
 
         <activity
             android:name=".activities.LoginPageActivity"
@@ -87,6 +78,16 @@
         </activity>
 
         <activity android:name=".FeedActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.TempAddWorkoutActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

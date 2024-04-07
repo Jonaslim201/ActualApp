@@ -170,10 +170,19 @@ public class ExerciseFirestore extends Firestore{
                                     if (collection.getPath().equals(UserExercise.getWorkoutsDoc().getPath())) {
                                         String nameOfEntry = bestWorkout.get("name").toString() + "." + User.getId();
                                         bestWorkout.put("id", User.getId());
+                                        bestWorkout.put("username", User.getUsername());
                                         friendLeaderboard.update(nameOfEntry, bestWorkout);
                                     } else {
                                         String nameOfEntry = bestWorkout.get("name").toString() + "." + acceptedId;
                                         bestWorkout.put("id", acceptedId);
+                                        final String[] friendsusername = new String[1];
+                                        newFriendDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                friendsusername[0] = (String) documentSnapshot.get("username");
+                                            }
+                                        });
+                                        bestWorkout.put("username", friendsusername[0]);
                                         leaderboard.update(nameOfEntry, bestWorkout);
                                     }
                                 }
@@ -196,6 +205,7 @@ public class ExerciseFirestore extends Firestore{
                     if (mapOfWorkouts != null){
                         for (Map.Entry<String,Object> workout:mapOfWorkouts.entrySet()){
                             Map<String, Object> currentWorkout = (Map<String, Object>) workout.getValue();
+                            Log.d("ExerciseFirestore", currentWorkout.toString());
 
                             float weightLifted = ((Number) currentWorkout.get("weightLifted")).floatValue();
                             String dateOfWorkout = currentWorkout.get("dateOfWorkout").toString();

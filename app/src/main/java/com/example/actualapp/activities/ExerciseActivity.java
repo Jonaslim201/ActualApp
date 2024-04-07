@@ -4,36 +4,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.actualapp.R;
+import com.example.actualapp.exerciseRelated.FriendWorkout;
 import com.example.actualapp.exerciseRelated.Workout;
 import com.example.actualapp.exerciseRelated.WorkoutCallback;
+import com.example.actualapp.leaderboardFragment;
+import com.example.actualapp.userRelated.Leaderboard;
 import com.example.actualapp.userRelated.UserExercise;
-import com.example.actualapp.workoutListAdapter;
+import com.example.actualapp.workoutFragment;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 
 //Individual Exercise pages, temp for Mike
-public class ExerciseActivity extends AppCompatActivity {
+public class ExerciseActivity extends AppCompatActivity implements workoutFragment.InitializationListener{
 
-    GraphView graphView;
     String exerciseName;
     String category;
-    private RecyclerView mRecyclerView;
     ArrayList<Workout> workoutRecords;
+    private List<FriendWorkout> leaderboardWorkouts;
+    private workoutFragment workoutFragment;
+    private leaderboardFragment leaderboardFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,24 +40,66 @@ public class ExerciseActivity extends AppCompatActivity {
         Bundle names = intent.getExtras();
         exerciseName = names.getString("exerciseName");
         category = names.getString("category");
-        setContentView(R.layout.individual_exercise);
-
-        Log.d("ExerciseActivity", "running getWorkouts");
+        Log.d("ExerciseActivity", category);
+        Log.d("ExerciseActivity", exerciseName);
         UserExercise.getWorkouts(category, exerciseName, new WorkoutCallback() {
             @Override
             public void onSuccessResult(List<? extends Workout> workouts, boolean isEmpty) {
-                Log.d("ExerciseActivity", "running getWorkouts");
-                Log.d("ExerciseActivity", String.valueOf(isEmpty));
                 if (!isEmpty){
                     workoutRecords = (ArrayList<Workout>) workouts;
-                    graphInit();
-                    recordsListInit();
+                    getLeaderboard();
                 }
             }
         });
-        //TODO: add toggle to switch to change to friends leaderboards
+    }
 
-        //TODO: add addExerciseRecord Button click listener and function
+    public void getLeaderboard(){
+        Leaderboard.getLeaderBoardWorkouts(exerciseName, category, new WorkoutCallback() {
+            @Override
+            public void onSuccessResult(List<? extends Workout> workouts, boolean isEmpty) {
+                if (!isEmpty){
+                    leaderboardWorkouts = (List<FriendWorkout>) workouts;
+                    Log.d("Leaderboard", "workouts found");
+                    Log.d("Leaderboard", workouts.toString());
+                    createView();
+                } else {
+                    Log.d("Leaderboard", "workouts not found");
+                    createView();
+                }
+            }
+        });
+    }
+
+    public void createView(){
+        setContentView(R.layout.individual_exercise);
+
+        Log.d("ExerciseActivityCreateView", workoutRecords.toString());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        workoutFragment = new workoutFragment(exerciseName, category, workoutRecords);
+        workoutFragment.setInitializationListener(this);
+
+        leaderboardFragment = new leaderboardFragment(exerciseName, category, leaderboardWorkouts);
+        SwitchMaterial leaderboardSwitch = findViewById(R.id.leaderboardSwitch);
+
+        transaction.replace(R.id.fragmentContainer, workoutFragment);
+        transaction.addToBackStack(null); // Add transaction to the back stack
+        transaction.commit();
+        leaderboardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                if (isChecked) {
+                    transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                    transaction.replace(R.id.fragmentContainer, leaderboardFragment);
+                } else {
+                    transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    transaction.replace(R.id.fragmentContainer, workoutFragment);
+                }
+                transaction.addToBackStack(null).commit();
+            }
+        });
+
         ExtendedFloatingActionButton addWorkout = findViewById(R.id.addExerciseRecord);
         addWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,61 +108,16 @@ public class ExerciseActivity extends AppCompatActivity {
                 Bundle intent = new Bundle();
                 intent.putString("exerciseName", exerciseName);
                 intent.putString("category", category);
+                myActivity.putExtras(intent);
 
                 startActivity(myActivity);
             }
         });
     }
 
-    private void recordsListInit() {
-        mRecyclerView = findViewById(R.id.recordsList);
-        workoutListAdapter mAdapter = new workoutListAdapter(this, workoutRecords);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
 
-    private void graphInit(){
-        graphView = findViewById(R.id.recordsGraph);
-
-        if(!workoutRecords.isEmpty()){
-            DataPoint[] dataPoints=new DataPoint[workoutRecords.size()];
-            Integer maxWeight=0;
-            //Loop to create Datapoint ArrayList for series
-            for (int i = 0; i < workoutRecords.size(); i++) {
-                if (workoutRecords.get(i).getWeightLifted()>maxWeight){
-                    maxWeight = Integer.valueOf((int) workoutRecords.get(i).getWeightLifted());
-                }
-                dataPoints[i]=new DataPoint(workoutRecords.get(i).dateCal.getTime(),Integer.valueOf((int) workoutRecords.get(i).getWeightLifted()));
-            }
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
-            series.setDrawDataPoints(true);
-            graphView.addSeries(series);
-
-            //pass Date objects to DataPoint-Constructor
-            //this will convert the Date to double via Date#getTime()
-            graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-            graphView.getGridLabelRenderer().setNumHorizontalLabels(5); // only 5 because of the space
-
-            //Get Date of date one month ago from most recent record
-            Calendar cal= Calendar.getInstance();
-            cal.setTime(workoutRecords.get(workoutRecords.size()-1).dateCal.getTime());
-            cal.add(cal.DATE,-31);
-            Date temp=cal.getTime();
-            //Set X bounds to show one month from most recent
-            graphView.getViewport().setMinX(temp.getTime());
-            graphView.getViewport().setMaxX(dataPoints[dataPoints.length-1].getX());
-            graphView.getViewport().setXAxisBoundsManual(true);
-            //Set Y bounds to show 0 to max weight+50kg
-            graphView.getViewport().setMinY(0);
-            graphView.getViewport().setMaxY(maxWeight+50);
-            graphView.getViewport().setYAxisBoundsManual(true);
-            //Set Title
-            graphView.setTitle(exerciseName);
-            graphView.setTitleTextSize(64);
-            //Set scrollable horizontal
-            graphView.getViewport().setScrollable(true);
-            // as we use dates as labels, the human rounding to nice readable numbers is not necessary
-            graphView.getGridLabelRenderer().setHumanRounding(false);
-        }
+    @Override
+    public void onInitializationComplete() {
+        getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
     }
 }
