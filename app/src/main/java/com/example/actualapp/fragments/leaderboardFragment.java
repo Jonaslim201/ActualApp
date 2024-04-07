@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.FriendWorkout;
 import com.example.actualapp.recyclerAdapters.LeaderboardAdapter;
 

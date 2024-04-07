@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Workout;
+import com.example.actualapp.recyclerAdapters.workoutListAdapter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;

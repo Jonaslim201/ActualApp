@@ -1,4 +1,4 @@
-package com.example.actualapp;
+package com.example.actualapp.recyclerAdapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Workout;
 
 import java.util.ArrayList;
