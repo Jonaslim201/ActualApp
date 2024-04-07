@@ -197,7 +197,7 @@ public class ExerciseFirestore extends Firestore{
 
     public static void getLeaderboard(String exerciseName, String category, WorkoutCallback callback){
 
-        List<FriendWorkout> leaderboardList = new ArrayList<>();
+        ArrayList<FriendWorkout> leaderboardList = new ArrayList<>();
         Leaderboard.getLeaderboard().document(category).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

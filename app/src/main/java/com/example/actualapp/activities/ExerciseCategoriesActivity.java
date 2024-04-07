@@ -39,7 +39,7 @@ public class ExerciseCategoriesActivity extends AppCompatActivity {
                         Intent myActivity = new Intent(ExerciseCategoriesActivity.this, CategoryActivity.class);
 
                         //Sending the String of what category the user clicked to the next activity
-                        myActivity.putExtra("categoryName", exerciseArray[finalI]);
+                        myActivity.putExtra("category", exerciseArray[finalI]);
                         startActivity(myActivity);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
                     } catch (Exception e) {

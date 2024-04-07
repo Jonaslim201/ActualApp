@@ -30,7 +30,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         //Getting the category name the user clicked from the Intent declared in ExerciseCategoriesActivity class
         Intent intent = getIntent();
-        category = intent.getStringExtra("categoryName");
+        category = intent.getStringExtra("category");
 
         //Access Firestore to retrieve the list of exercises for the category chosen
         ExerciseFirestore.getExercises(CategoryActivity.this, category, new ExerciseCallBack(){
@@ -69,7 +69,7 @@ public class CategoryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 backButton.setBackground(getDrawable(R.drawable.circular_button));
                 startActivity(new Intent(CategoryActivity.this, ExerciseCategoriesActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.stay);
             }
         });
 

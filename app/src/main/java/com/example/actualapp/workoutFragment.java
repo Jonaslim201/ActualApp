@@ -1,7 +1,6 @@
 package com.example.actualapp;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ public class workoutFragment extends Fragment {
         this.exerciseName = exerciseName;
         this.category = category;
         this.workoutRecords = workoutRecords;
-        Log.d("workoutFragment", workoutRecords.toString());
     }
 
     public interface InitializationListener {
@@ -55,72 +53,74 @@ public class workoutFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         workoutView = inflater.inflate(R.layout.graphview_workouts_layout, container, false);
-        recordsListInit();
-        graphInit(new FirestoreCallBack() {
-            @Override
-            public void onFirestoreResult(boolean success) {
-                if (initializationListener != null && success) {
-                    initializationListener.onInitializationComplete();
+
+        if(workoutRecords != null && !workoutRecords.isEmpty()){
+            recordsListInit();
+            graphInit(new FirestoreCallBack() {
+                @Override
+                public void onFirestoreResult(boolean success) {
+                    if (initializationListener != null && success) {
+                        initializationListener.onInitializationComplete();
+                    }
                 }
-            }
-        });
+            });
+        }
         return workoutView;
     }
 
     private void recordsListInit() {
+
         mRecyclerView = workoutView.findViewById(R.id.recordsList);
         workoutListAdapter mAdapter = new workoutListAdapter(workoutView.getContext(), workoutRecords);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(workoutView.getContext()));
+
     }
 
     private void graphInit(FirestoreCallBack callBack){
         graphView = workoutView.findViewById(R.id.recordsGraph);
+        Collections.sort(workoutRecords);
 
-        if(!workoutRecords.isEmpty()){
-            Collections.sort(workoutRecords);
-            Log.d("workoutFragment", workoutRecords.toString());
-            DataPoint[] dataPoints=new DataPoint[workoutRecords.size()];
-            float maxWeight=0;
-            //Loop to create Datapoint ArrayList for series
-            for (int i = 0; i < workoutRecords.size(); i++) {
-                if (workoutRecords.get(i).getWeightLifted()>maxWeight){
-                    maxWeight = workoutRecords.get(i).getWeightLifted();
-                }
-                Log.d("workoutFragment", workoutRecords.get(i).dateCal.toString());
-                Log.d("workoutFragment", workoutRecords.get(i).getName());
-                dataPoints[i]=new DataPoint(workoutRecords.get(i).dateCal.getTime(),workoutRecords.get(i).getWeightLifted());
+        DataPoint[] dataPoints=new DataPoint[workoutRecords.size()];
+        float maxWeight=0;
+        //Loop to create Datapoint ArrayList for series
+        for (int i = 0; i < workoutRecords.size(); i++) {
+            if (workoutRecords.get(i).getWeightLifted()>maxWeight){
+                maxWeight = workoutRecords.get(i).getWeightLifted();
             }
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
-            series.setDrawDataPoints(true);
-            graphView.addSeries(series);
 
-            //pass Date objects to DataPoint-Constructor
-            //this will convert the Date to double via Date#getTime()
-            graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(workoutView.getContext()));
-            graphView.getGridLabelRenderer().setNumHorizontalLabels(5); // only 5 because of the space
-
-            //Get Date of date one month ago from most recent record
-            Calendar cal= Calendar.getInstance();
-            cal.setTime(workoutRecords.get(workoutRecords.size()-1).dateCal.getTime());
-            cal.add(cal.DATE,-31);
-            Date temp=cal.getTime();
-            //Set X bounds to show one month from most recent
-            graphView.getViewport().setMinX(temp.getTime());
-            graphView.getViewport().setMaxX(dataPoints[dataPoints.length-1].getX());
-            graphView.getViewport().setXAxisBoundsManual(true);
-            //Set Y bounds to show 0 to max weight+50kg
-            graphView.getViewport().setMinY(0);
-            graphView.getViewport().setMaxY(maxWeight+50);
-            graphView.getViewport().setYAxisBoundsManual(true);
-            //Set Title
-            graphView.setTitle(exerciseName);
-            graphView.setTitleTextSize(64);
-            //Set scrollable horizontal
-            graphView.getViewport().setScrollable(true);
-            // as we use dates as labels, the human rounding to nice readable numbers is not necessary
-            graphView.getGridLabelRenderer().setHumanRounding(false);
-            callBack.onFirestoreResult(true);
+            dataPoints[i]=new DataPoint(workoutRecords.get(i).dateCal.getTime(),workoutRecords.get(i).getWeightLifted());
         }
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
+        series.setDrawDataPoints(true);
+        graphView.addSeries(series);
+
+        //pass Date objects to DataPoint-Constructor
+        //this will convert the Date to double via Date#getTime()
+        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(workoutView.getContext()));
+        graphView.getGridLabelRenderer().setNumHorizontalLabels(5); // only 5 because of the space
+
+        //Get Date of date one month ago from most recent record
+        Calendar cal= Calendar.getInstance();
+        cal.setTime(workoutRecords.get(workoutRecords.size()-1).dateCal.getTime());
+        cal.add(cal.DATE,-31);
+        Date temp=cal.getTime();
+        //Set X bounds to show one month from most recent
+        graphView.getViewport().setMinX(temp.getTime());
+        graphView.getViewport().setMaxX(dataPoints[dataPoints.length-1].getX());
+        graphView.getViewport().setXAxisBoundsManual(true);
+        //Set Y bounds to show 0 to max weight+50kg
+        graphView.getViewport().setMinY(0);
+        graphView.getViewport().setMaxY(maxWeight+50);
+        graphView.getViewport().setYAxisBoundsManual(true);
+        //Set Title
+        graphView.setTitle(exerciseName);
+        graphView.setTitleTextSize(64);
+        //Set scrollable horizontal
+        graphView.getViewport().setScrollable(true);
+        // as we use dates as labels, the human rounding to nice readable numbers is not necessary
+        graphView.getGridLabelRenderer().setHumanRounding(false);
+        callBack.onFirestoreResult(true);
+
     }
 }
