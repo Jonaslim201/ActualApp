@@ -70,6 +70,7 @@ public class ExerciseFirestore extends Firestore{
                             float weightLifted = ((Number) mapWorkout.get("weightLifted")).floatValue();
                             float numOfReps = ((Number) mapWorkout.get("numOfReps")).floatValue();
 
+                            Log.d("EXERCISEFIRESTORE", mapWorkout.get("dateOfWorkout").toString());
 
                             workouts.add(new Workout(mapWorkout.get("name").toString(), weightLifted, mapWorkout.get("dateOfWorkout").toString(), (int) numOfReps));;
                         }

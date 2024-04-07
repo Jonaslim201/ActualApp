@@ -21,6 +21,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 public class workoutFragment extends Fragment {
@@ -54,12 +55,6 @@ public class workoutFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         workoutView = inflater.inflate(R.layout.graphview_workouts_layout, container, false);
-        return workoutView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         recordsListInit();
         graphInit(new FirestoreCallBack() {
             @Override
@@ -69,6 +64,7 @@ public class workoutFragment extends Fragment {
                 }
             }
         });
+        return workoutView;
     }
 
     private void recordsListInit() {
@@ -79,10 +75,11 @@ public class workoutFragment extends Fragment {
     }
 
     private void graphInit(FirestoreCallBack callBack){
-        Log.d("workoutFragmentGraphInit", workoutRecords.toString());
         graphView = workoutView.findViewById(R.id.recordsGraph);
 
         if(!workoutRecords.isEmpty()){
+            Collections.sort(workoutRecords);
+            Log.d("workoutFragment", workoutRecords.toString());
             DataPoint[] dataPoints=new DataPoint[workoutRecords.size()];
             float maxWeight=0;
             //Loop to create Datapoint ArrayList for series
@@ -90,6 +87,8 @@ public class workoutFragment extends Fragment {
                 if (workoutRecords.get(i).getWeightLifted()>maxWeight){
                     maxWeight = workoutRecords.get(i).getWeightLifted();
                 }
+                Log.d("workoutFragment", workoutRecords.get(i).dateCal.toString());
+                Log.d("workoutFragment", workoutRecords.get(i).getName());
                 dataPoints[i]=new DataPoint(workoutRecords.get(i).dateCal.getTime(),workoutRecords.get(i).getWeightLifted());
             }
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);

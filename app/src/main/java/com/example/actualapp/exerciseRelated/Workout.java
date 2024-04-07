@@ -23,7 +23,7 @@ public class Workout extends Exercise implements Comparable<Workout>{
         this.weightLifted = weightLifted;
         this.dateOfWorkout = dateOfWorkout;
         this.numOfReps = numOfReps;
-        this.dateCal = Calendar.getInstance();
+        setDate();
     }
 
     @Override
@@ -67,46 +67,47 @@ public class Workout extends Exercise implements Comparable<Workout>{
         this.hours=Integer.valueOf(dateOfWorkout.substring(12,14));
         this.minutes=Integer.valueOf(dateOfWorkout.substring(15,17));
         this.seconds=Integer.valueOf(dateOfWorkout.substring(18,20));
+        this.dateCal = Calendar.getInstance();
         this.dateCal.set(year,month,day,hours,minutes,seconds);
     }
 
     public void getMonth(String date) {
         switch (date.substring(3,6)){
             case "Jan":
-                this.month = 1;
+                this.month = 0;
                 break;
             case "Feb":
-                this.month = 2;
+                this.month = 1;
                 break;
             case "Mar":
-                this.month = 3;
+                this.month = 2;
                 break;
             case "Apr":
-                this.month = 4;
+                this.month = 3;
                 break;
             case "May":
-                this.month = 5;
+                this.month = 4;
                 break;
             case "Jun":
-                this.month = 6;
+                this.month = 5;
                 break;
             case "Jul":
-                this.month = 7;
+                this.month = 6;
                 break;
             case "Aug":
-                this.month = 8;
+                this.month = 7;
                 break;
             case "Sep":
-                this.month = 9;
+                this.month = 8;
                 break;
             case "Oct":
-                this.month = 10;
+                this.month = 9;
                 break;
             case "Nov":
-                this.month = 11;
+                this.month = 10;
                 break;
             case "Dec":
-                this.month = 12;
+                this.month = 11;
                 break;
         }
     }

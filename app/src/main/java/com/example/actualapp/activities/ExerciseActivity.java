@@ -40,8 +40,7 @@ public class ExerciseActivity extends AppCompatActivity implements workoutFragme
         Bundle names = intent.getExtras();
         exerciseName = names.getString("exerciseName");
         category = names.getString("category");
-        Log.d("ExerciseActivity", category);
-        Log.d("ExerciseActivity", exerciseName);
+
         UserExercise.getWorkouts(category, exerciseName, new WorkoutCallback() {
             @Override
             public void onSuccessResult(List<? extends Workout> workouts, boolean isEmpty) {
@@ -74,17 +73,12 @@ public class ExerciseActivity extends AppCompatActivity implements workoutFragme
         setContentView(R.layout.individual_exercise);
 
         Log.d("ExerciseActivityCreateView", workoutRecords.toString());
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         workoutFragment = new workoutFragment(exerciseName, category, workoutRecords);
         workoutFragment.setInitializationListener(this);
 
         leaderboardFragment = new leaderboardFragment(exerciseName, category, leaderboardWorkouts);
         SwitchMaterial leaderboardSwitch = findViewById(R.id.leaderboardSwitch);
-
-        transaction.replace(R.id.fragmentContainer, workoutFragment);
-        transaction.addToBackStack(null); // Add transaction to the back stack
-        transaction.commit();
         leaderboardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -113,11 +107,17 @@ public class ExerciseActivity extends AppCompatActivity implements workoutFragme
                 startActivity(myActivity);
             }
         });
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainer, workoutFragment);
+        transaction.addToBackStack(null); // Add transaction to the back stack
+        transaction.commit();
     }
 
 
     @Override
     public void onInitializationComplete() {
+        Log.d("IS THIS BEING CALLED", "THIS WAS CALLED");
         getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
     }
 }
