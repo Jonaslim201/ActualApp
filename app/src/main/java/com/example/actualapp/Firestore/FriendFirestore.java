@@ -1,17 +1,10 @@
 package com.example.actualapp.Firestore;
 
-import androidx.annotation.NonNull;
-
 import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserFriends;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class FriendFirestore extends Firestore {
 
@@ -19,73 +12,48 @@ public class FriendFirestore extends Firestore {
 
     }
 
+    //Sends a friend request to the user with the given id
     public static void sendFriendRequest(String id, FirestoreCallBack callBack) {
-        db.collection("appUsers").whereEqualTo("id", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    if (!task.getResult().isEmpty()){
-                        for (QueryDocumentSnapshot requestedFriendDocument: task.getResult()){
-                            requestedFriendDocument.getReference().update("friendRequests.received", FieldValue.arrayUnion(User.getUserDoc().getReference())).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    User.getUserDoc().getReference().update("friendRequests.sent", FieldValue.arrayUnion(requestedFriendDocument.getReference()));
-                                    callBack.onFirestoreResult(true);
-                                }
-                            });
-                        }
-                    } else {
-                        callBack.onFirestoreResult(false);
-                    }
+
+        db.collection("appUsers").whereEqualTo("id", id).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                for (QueryDocumentSnapshot requestedFriendDocument: task.getResult()){
+                    requestedFriendDocument.getReference().update("friendRequests.received", FieldValue.arrayUnion(User.getUserDoc()))
+                            .addOnSuccessListener(unused -> {
+                        User.getUserDoc().update("friendRequests.sent", FieldValue.arrayUnion(requestedFriendDocument.getReference()));
+                        callBack.onFirestoreResult(true);
+                    });
                 }
+            } else {
+                callBack.onFirestoreResult(false);
             }
         });
     }
 
+    //Accepts the friend request from the user with the given id
     public static void acceptFriendRequest(DocumentReference acceptedFriendDoc, FirestoreCallBack callBack, String acceptedId){
-        User.getUserDoc().getReference().update("friends", FieldValue.arrayUnion(acceptedFriendDoc)).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                addSelfInFriend(acceptedFriendDoc, callBack);
-                ExerciseFirestore.addedFriendLeaderboard(acceptedFriendDoc, acceptedId);
-                UserFriends.addFriend(acceptedFriendDoc);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                callBack.onFirestoreResult(false);
-            }
-        });
+
+        User.getUserDoc().update("friends", FieldValue.arrayUnion(acceptedFriendDoc)).addOnSuccessListener(unused -> {
+            addSelfInFriend(acceptedFriendDoc, callBack);
+            ExerciseFirestore.addedFriendLeaderboard(acceptedFriendDoc, acceptedId);
+            UserFriends.addFriend(acceptedFriendDoc);
+        }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
     }
 
+    //Adds the current user to the friend list of the new friend
     public static void addSelfInFriend(DocumentReference acceptedFriendDoc, FirestoreCallBack callBack){
-        acceptedFriendDoc.update("friends", FieldValue.arrayUnion(User.getUserDoc().getReference())).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                removeFriendRequest(acceptedFriendDoc, callBack);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                callBack.onFirestoreResult(false);
-            }
-        });
+
+        acceptedFriendDoc.update("friends", FieldValue.arrayUnion(User.getUserDoc())).addOnSuccessListener(unused -> removeFriendRequest(acceptedFriendDoc, callBack))
+                .addOnFailureListener(e -> callBack.onFirestoreResult(false));
     }
 
+    //Removes the friend request from the user received friend request array and the friend's sent request array if the request is rejected
     public static void removeFriendRequest(DocumentReference rejectedFriendDoc, FirestoreCallBack callBack){
 
-        User.getUserDoc().getReference().update("friendRequests.received", FieldValue.arrayRemove(rejectedFriendDoc)).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                rejectedFriendDoc.update("friendRequests.sent", FieldValue.arrayRemove(User.getUserDoc().getReference()));
-                callBack.onFirestoreResult(true);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                callBack.onFirestoreResult(false);
-            }
-        });
+        User.getUserDoc().update("friendRequests.received", FieldValue.arrayRemove(rejectedFriendDoc)).addOnSuccessListener(unused -> {
+            rejectedFriendDoc.update("friendRequests.sent", FieldValue.arrayRemove(User.getUserDoc()));
+            callBack.onFirestoreResult(true);
+        }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
     }
 
 }

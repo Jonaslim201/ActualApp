@@ -9,18 +9,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.R;
 
 public class ExerciseCategoriesActivity extends AppCompatActivity {
-
-    private static String[] exerciseArray = {
-            "Abs", "Back", "Biceps", "Calf", "Chest", "Legs", "Forearms", "Legs", "Shoulders", "Triceps"
-    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.exercise_categories);
 
+        String[] exerciseArray = ExerciseFirestore.getExerciseArray();
 
         //Initialize each CardView and places them in an array
         CardView[] but = new CardView[9];
@@ -52,8 +50,5 @@ public class ExerciseCategoriesActivity extends AppCompatActivity {
         }
     }
 
-    public static String[] getExerciseArray() {
-        return exerciseArray;
-    }
 
 }

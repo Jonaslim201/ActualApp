@@ -1,8 +1,13 @@
 package com.example.actualapp.exerciseRelated;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 //Each exercise has its individual class
-public class Exercise {
+public class Exercise implements Parcelable {
 
     private String name;
     private String priMuscleGroups;
@@ -17,6 +22,24 @@ public class Exercise {
         this.name = name;
     }
 
+    protected Exercise(Parcel in) {
+        name = in.readString();
+        priMuscleGroups = in.readString();
+        secMuscleGroups = in.readString();
+    }
+
+    public static final Creator<Exercise> CREATOR = new Creator<Exercise>() {
+        @Override
+        public Exercise createFromParcel(Parcel in) {
+            return new Exercise(in);
+        }
+
+        @Override
+        public Exercise[] newArray(int size) {
+            return new Exercise[size];
+        }
+    };
+
     public String getName() {
         return name;
     }
@@ -27,6 +50,18 @@ public class Exercise {
 
     public String getSecMuscleGroups() {
         return secMuscleGroups;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(priMuscleGroups);
+        dest.writeString(secMuscleGroups);
     }
 
     public static class ExerciseBuilder{

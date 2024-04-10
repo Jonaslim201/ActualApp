@@ -1,22 +1,27 @@
 package com.example.actualapp.exerciseRelated;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.Calendar;
+import java.util.Map;
 
 //Subclass for Exercise, one Object is one Workout session the user did
-public class Workout extends Exercise implements Comparable<Workout>{
+public class Workout extends Exercise implements Comparable<Workout>, Parcelable {
     private float weightLifted;
     private String dateOfWorkout;
     private int numOfReps;
     private String dayMonthYear;
-    Calendar calendar;
     int day;
     int month;
     int year;
     int hours;
     int minutes;
     int seconds;
-    public Calendar dateCal;
+    Calendar dateCal;
 
     public Workout(String name, float weightLifted, String dateOfWorkout, int numOfReps){
         super(name);
@@ -25,6 +30,15 @@ public class Workout extends Exercise implements Comparable<Workout>{
         this.numOfReps = numOfReps;
         setDate();
     }
+
+    public Workout(Map<String, Object> map){
+        super((String) map.get("name"));
+        this.weightLifted = Float.parseFloat(map.get("weightLifted").toString());
+        this.dateOfWorkout = (String) map.get("dateOfWorkout");
+        this.numOfReps = Integer.parseInt(map.get("numOfReps").toString());
+        setDate();
+    }
+
 
     @Override
     public String getName() {
@@ -55,23 +69,27 @@ public class Workout extends Exercise implements Comparable<Workout>{
         this.dateOfWorkout = dateOfWorkout;
     }
 
-    public String getDayMonthYear() {
+    public String DayMonthYear() {
         return dayMonthYear;
     }
 
     public void setDate(){
         dayMonthYear = dateOfWorkout.substring(0,11);
         this.day = Integer.valueOf(dateOfWorkout.substring(0,2));
-        getMonth(dateOfWorkout);
+        Month(dateOfWorkout);
         this.year=Integer.valueOf(dateOfWorkout.substring(7,11));
         this.hours=Integer.valueOf(dateOfWorkout.substring(12,14));
         this.minutes=Integer.valueOf(dateOfWorkout.substring(15,17));
         this.seconds=Integer.valueOf(dateOfWorkout.substring(18,20));
-        this.dateCal = Calendar.getInstance();
-        this.dateCal.set(year,month,day,hours,minutes,seconds);
+        dateCal = Calendar.getInstance();
+        dateCal.set(year,month,day,hours,minutes,seconds);
     }
 
-    public void getMonth(String date) {
+    public Calendar dateCal(){
+        return dateCal;
+    }
+
+    public void Month(String date) {
         switch (date.substring(3,6)){
             case "Jan":
                 this.month = 0;
@@ -114,6 +132,34 @@ public class Workout extends Exercise implements Comparable<Workout>{
 
     @Override
     public int compareTo(Workout o) {
-        return this.dateCal.compareTo(o.dateCal);
+        return this.dateCal().compareTo(o.dateCal());
+    }
+
+
+    public static final Creator<Workout> CREATOR = new Creator<Workout>() {
+        @Override
+        public Workout createFromParcel(Parcel in) {
+            return new Workout(in);
+        }
+
+        @Override
+        public Workout[] newArray(int size) {
+            return new Workout[size];
+        }
+    };
+
+    public Workout(Parcel in) {
+        super(in);
+        weightLifted = in.readFloat();
+        dateOfWorkout = in.readString();
+        numOfReps = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(getName());
+        dest.writeFloat(weightLifted);
+        dest.writeString(dateOfWorkout);
+        dest.writeInt(numOfReps);
     }
 }

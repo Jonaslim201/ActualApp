@@ -8,4 +8,8 @@
     <string name="register">Register</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="add_exercise">Add Record</string>
+    <string name="title_home">Home</string>
+    <string name="title_workouts">Workouts</string>
+    <string name="title_friends">Friends</string>
+    <string name="title_profile">Profile</string>
 </resources>

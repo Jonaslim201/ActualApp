@@ -3,10 +3,10 @@ package com.example.actualapp.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,16 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.actualapp.FeedActivity;
-import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.example.actualapp.Firestore.FirestoreListener;
+import com.example.actualapp.Firestore.LeaderboardChangeListener;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.FriendWorkout;
 import com.example.actualapp.exerciseRelated.Workout;
-import com.example.actualapp.exerciseRelated.WorkoutCallback;
-import com.example.actualapp.fragments.leaderboardFragment;
+import com.example.actualapp.exerciseRelated.WorkoutKey;
+import com.example.actualapp.fragments.LeaderboardFragment;
+import com.example.actualapp.fragments.WorkoutFragment;
 import com.example.actualapp.userRelated.Leaderboard;
 import com.example.actualapp.userRelated.UserExercise;
-import com.example.actualapp.fragments.workoutFragment;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
@@ -32,59 +33,63 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 
 //Individual Exercise pages, temp for Mike
-public class ExerciseActivity extends AppCompatActivity implements workoutFragment.InitializationListener{
+public class ExerciseActivity extends AppCompatActivity implements WorkoutFragment.InitializationListener, LeaderboardChangeListener {
 
-    String exerciseName;
-    String category;
+    public static boolean isActive = false;
+    public static String exerciseName;
+    public static String category;
+    private WorkoutKey key;
     ArrayList<Workout> workoutRecords;
     private ArrayList<FriendWorkout> leaderboardWorkouts;
-    private workoutFragment workoutFragment;
-    private leaderboardFragment leaderboardFragment;
-    private TextView noRecords;
+    private WorkoutFragment workoutFragment;
+    private LeaderboardFragment leaderboardFragment;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         Intent intent = getIntent();
         Bundle names = intent.getExtras();
         exerciseName = names.getString("exerciseName");
         category = names.getString("category");
+        key = new WorkoutKey(category, exerciseName);
+        Log.d("EXERCISEACTIVITY", exerciseName);
+        Log.d("EXERCISEACTIVITY", category);
 
-        UserExercise.getWorkouts(category, exerciseName, new WorkoutCallback() {
-            @Override
-            public void onSuccessResult(List<? extends Workout> workouts, boolean isEmpty) {
-                if (!isEmpty){
-                    workoutRecords = (ArrayList<Workout>) workouts;
-                }
-                getLeaderboard();
-            }
-        });
+        workoutRecords = UserExercise.getWorkouts(key);
+        workoutFragment = WorkoutFragment.newInstance(exerciseName, category, workoutRecords);
+
+        leaderboardWorkouts = Leaderboard.getLeaderboard(key);
+        leaderboardFragment = LeaderboardFragment.newInstance(exerciseName, category, leaderboardWorkouts);
+        createView();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        workoutFragment.removeInitializationListener();
+        leaderboardFragment = null;
+        workoutFragment = null;
+        FirestoreListener.unregisterLeaderboardListener(this);
+        isActive = false;
     }
 
     public void getLeaderboard(){
-        Leaderboard.getLeaderBoardWorkouts(exerciseName, category, new WorkoutCallback() {
-            @Override
-            public void onSuccessResult(List<? extends Workout> workouts, boolean isEmpty) {
-                if (!isEmpty){
-                    leaderboardWorkouts = (ArrayList<FriendWorkout>) workouts;
-                }
-                createView();
-            }
-        });
+        Log.d("EXERCISEACTIVITY", "GETTING LEADERBOARD");
     }
 
     public void createView(){
+        FirestoreListener.registerLeaderboardListener(this);
         setContentView(R.layout.individual_exercise);
-        noRecords = findViewById(R.id.noRecords);
 
-        workoutFragment = new workoutFragment(exerciseName, category, workoutRecords);
         workoutFragment.setInitializationListener(this);
 
-        leaderboardFragment = new leaderboardFragment(exerciseName, category, leaderboardWorkouts);
         initialiseButtons();
         SwitchMaterial leaderboardSwitch = findViewById(R.id.leaderboardSwitch);
         leaderboardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -94,11 +99,9 @@ public class ExerciseActivity extends AppCompatActivity implements workoutFragme
                 if (isChecked) {
                     transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
                     transaction.replace(R.id.fragmentContainer, leaderboardFragment);
-                    checkArrays(workoutRecords);
                 } else {
                     transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     transaction.replace(R.id.fragmentContainer, workoutFragment);
-                    checkArrays(leaderboardWorkouts);
                 }
                 transaction.addToBackStack(null).commit();
             }
@@ -106,16 +109,7 @@ public class ExerciseActivity extends AppCompatActivity implements workoutFragme
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, workoutFragment).addToBackStack(null).commit();
-//        transaction.addToBackStack(null); // Add transaction to the back stack
-//        transaction.commit();
-    }
-
-    public void checkArrays(List<?> list){
-        if (list == null || list.isEmpty()){
-            noRecords.setVisibility(View.VISIBLE);
-        } else {
-            noRecords.setVisibility(View.GONE);
-        }
+        isActive = true;
     }
 
 
@@ -192,23 +186,34 @@ public class ExerciseActivity extends AppCompatActivity implements workoutFragme
         //Creates a new Workout instance
         Workout workout = new Workout(exerciseName,weightLifted, dateTime, numOfReps);
 
-        //Inserts the new Workout instance through Firestore
-        ExerciseFirestore.insertWorkout(category, workout, new FirestoreCallBack() {
+        UserExercise.addWorkout(key, workout, new FirestoreCallBack() {
             @Override
             public void onFirestoreResult(boolean success) {
                 if (success){
-                    Toast.makeText(ExerciseActivity.this, "succeded", Toast.LENGTH_SHORT).show();
+                    workoutFragment.addWorkout(workout);
+                    Toast.makeText(ExerciseActivity.this, "Workout added!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ExerciseActivity.this, "not succeded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExerciseActivity.this, "Failed to add workout.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
 
-
     @Override
     public void onInitializationComplete() {
         getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onLeaderboardChanged(WorkoutKey key) {
+        Log.d("EXERCISEACTIVITY", key.toString());
+        getLeaderboard();
+        ArrayList<FriendWorkout> newRecords = Leaderboard.getLeaderboard(key);
+        if (leaderboardFragment.getView() == null){
+            leaderboardFragment = LeaderboardFragment.newInstance(exerciseName, category, newRecords);
+        } else {
+            leaderboardFragment.addWorkout(newRecords);
+        }
     }
 }

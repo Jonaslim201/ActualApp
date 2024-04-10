@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Workout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class workoutListAdapter extends RecyclerView.Adapter<workoutListAdapter.recordViewHolder> {
@@ -21,10 +23,11 @@ public class workoutListAdapter extends RecyclerView.Adapter<workoutListAdapter.
     public workoutListAdapter(Context context, ArrayList<Workout> records) {
         mInflater = LayoutInflater.from(context);
         this.workoutRecords = records;
+        Collections.sort(workoutRecords, Collections.reverseOrder());
     }
+    @NonNull
     @Override
-    public recordViewHolder onCreateViewHolder(ViewGroup parent,
-                                               int viewType){
+    public recordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         // Inflate an item view.
         View mItemView =
                 mInflater.inflate(R.layout.records_list_layout,
@@ -34,14 +37,13 @@ public class workoutListAdapter extends RecyclerView.Adapter<workoutListAdapter.
 
 
     @Override
-    public void onBindViewHolder(
-            recordViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull recordViewHolder holder, int position) {
         // Retrieve the data for that position
 
         Workout mCurrent = workoutRecords.get(position);
         mCurrent.setDate();
         // Add the data to the view
-        holder.exerciseDate.setText(mCurrent.getDayMonthYear());
+        holder.exerciseDate.setText(mCurrent.DayMonthYear());
         holder.exerciseRep.setText(mCurrent.getNumOfReps()+" reps");
         holder.exerciseWeight.setText(mCurrent.getWeightLifted()+"kg");
     }
@@ -50,13 +52,13 @@ public class workoutListAdapter extends RecyclerView.Adapter<workoutListAdapter.
         return workoutRecords.size();
     }
 
-    public class recordViewHolder extends RecyclerView.ViewHolder {
+    public static class recordViewHolder extends RecyclerView.ViewHolder {
 
         TextView exerciseDate;
         TextView exerciseRep;
         TextView exerciseWeight;
 
-        public recordViewHolder(View itemView) {
+        public recordViewHolder(@NonNull View itemView) {
             super(itemView);
             exerciseDate = itemView.findViewById(R.id.exerciseDate);
             exerciseRep = itemView.findViewById(R.id.exerciseRep);

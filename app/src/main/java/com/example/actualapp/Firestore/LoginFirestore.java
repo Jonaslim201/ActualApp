@@ -9,18 +9,15 @@ import java.util.Map;
 public class LoginFirestore extends Firestore{
 
     //Start of Login function
-    public static void loginUser(Map user, Context activity, FirestoreCallBack callback) {
-        String username = (String) user.get("username");
-        Log.d("Debug", username);
+    public static void loginUser(Map<String, Object> user, Context activity, FirestoreCallBack callback) {
         Log.d("Debug", "Checking user");
-
         //Checks if username exists in the Firestore
-        checkUser(username, activity, user, callback, false);
+        checkUser((String) user.get("username"), activity, user, callback, false);
     }
 
 
     //Checks password and makes Toast if failed to login. Send back false on callback
-    static void checkPassword(Context activity, Map user, FirestoreCallBack callback) {
+    static void checkPassword(Context activity, Map<String, Object> user, FirestoreCallBack callback) {
         Log.d("Firestore", String.valueOf(userDocument.isDocumentFound()));
         if (userDocument.isDocumentFound()) {
             try {
@@ -28,20 +25,21 @@ public class LoginFirestore extends Firestore{
                 String inputPw = String.valueOf(user.get("password"));
                 if (inputPw.equals(actualPw)) {
                     initializeUserObject(activity, user, false, callback);
-
                 } else {
-                    Toast.makeText(activity, "Wrong password.", Toast.LENGTH_SHORT).show();
-                    callback.onFirestoreResult(false);
+                    displayToast(activity, "Wrong password.", callback);
                 }
 
             } catch (IllegalArgumentException e) {
-                Toast.makeText(activity, "Please enter a value.", Toast.LENGTH_SHORT).show();
-                callback.onFirestoreResult(false);
+                displayToast(activity, "Please enter a value.", callback);
             }
 
         } else {
-            Toast.makeText(activity, "Username not found.", Toast.LENGTH_SHORT).show();
-            callback.onFirestoreResult(false);
+            displayToast(activity, "Username not found.", callback);
         }
+    }
+
+    static void displayToast(Context activity, String message, FirestoreCallBack callback) {
+        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+        callback.onFirestoreResult(false);
     }
 }

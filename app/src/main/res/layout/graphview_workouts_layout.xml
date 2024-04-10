@@ -8,6 +8,8 @@
         android:id="@+id/workoutsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/noRecords"
         android:orientation="vertical">
 
         <com.jjoe64.graphview.GraphView
@@ -17,7 +19,7 @@
             android:padding="10dp" />
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recordsList"
                 android:layout_width="match_parent"
@@ -26,6 +28,21 @@
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/noRecords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:padding="20sp"
+        android:text="No workouts yet. Get started!"
+        android:textColor="@color/black"
+        android:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,6 @@
 package com.example.actualapp.userRelated;
 
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentReference;
 
 
 //User class with static fields to allow the information to be accessed throughout the app session
@@ -13,7 +13,7 @@ public class User {
     private static String id;
 
     //Reference to the user document in Firestore
-    private static DocumentSnapshot userDoc;
+    private static DocumentReference userDoc;
 
     public User(UserBuilder userBuilder){
         User.username = userBuilder.username;
@@ -26,7 +26,7 @@ public class User {
     public User(){
     }
 
-    public static DocumentSnapshot getUserDoc() {
+    public static DocumentReference getUserDoc() {
         return userDoc;
     }
 
@@ -51,7 +51,7 @@ public class User {
         private String password;
         private String email;
         private String id;
-        private DocumentSnapshot userDoc;
+        private DocumentReference userDoc;
 
         public UserBuilder() {
         }
@@ -76,7 +76,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setUserDoc(DocumentSnapshot userDoc) {
+        public UserBuilder setUserDoc(DocumentReference userDoc) {
             this.userDoc = userDoc;
             return this;
         }

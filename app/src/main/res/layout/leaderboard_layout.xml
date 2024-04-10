@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.LeaderboardActivity">
+    tools:context=".activities.ExerciseActivity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/leaderboardFragment"
@@ -53,4 +54,13 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/noRecords"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="No workouts yet. Get started!"
+        android:textColor="@color/black"
+        android:visibility="gone" />
 </LinearLayout>

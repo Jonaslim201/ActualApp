@@ -4,14 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Map;
 import java.util.Random;
@@ -19,43 +12,32 @@ import java.util.Random;
 public class RegisterFirestore extends Firestore{
 
     //Start of register user function
-    public static void registerUser(Map user, Context activity, FirestoreCallBack callback){
-        //Gets inputted username
-        String username = (String) user.get("username");
-        Log.d("Debug", username);
-
+    public static void registerUser(Map<String, Object> user, Context activity, FirestoreCallBack callback){
         //Check if the username exists
         Log.d("Debug", "Checking user");
-        Firestore.checkUser(username, activity, user, callback, true);
+        Firestore.checkUser((String) user.get("username"), activity, user, callback, true);
     }
 
-    static void handleRegistration(Context activity, Map user, String username, FirestoreCallBack callback) {
-        Log.d("register", "entered handle register");
-
+    static void handleRegistration(Context activity, Map<String, Object> user, String username, FirestoreCallBack callback) {
         //If username exists, return False on callback
         if (userDocument.isDocumentFound()){
             Log.d("register", "Username exists");
             callback.onFirestoreResult(false);
             Toast.makeText(activity, "Username already exists.", Toast.LENGTH_SHORT).show();
-        } else { //If username does noe exist, get unique ID for user
+        } else { //If username does not exist, get unique ID for user
             checkIDRecursively(activity, user, username, callback);
         }
     }
 
     //Finding unique ID
-    private static void checkIDRecursively(Context activity, Map user, String username, FirestoreCallBack callback) {
+    private static void checkIDRecursively(Context activity, Map<String, Object> user, String username, FirestoreCallBack callback) {
         final String id = generateId();
-        getID(id, new FirestoreCallBack() {
-            @Override
-            public void onFirestoreResult(boolean success) {
-                if (success) {
-                    // Call the method recursively if randomly generated ID exists
-                    checkIDRecursively(activity, user, username, callback);
-                } else {
-                    //Puts id in the HashMap with the other information and completes Registration
-                    user.put("id", id);
-                    completeRegistration(activity, user, username, callback);
-                }
+        getID(id, success -> {
+            if (success) {
+                checkIDRecursively(activity, user, username, callback);
+            } else {
+                user.put("id", id);
+                completeRegistration(activity, user, username, callback);
             }
         });
     }
@@ -63,51 +45,21 @@ public class RegisterFirestore extends Firestore{
     //Checks if generated ID already exists in the Firestore
     private static void getID(String id, FirestoreCallBack callBack){
         Query query = db.collection("appUsers").whereEqualTo("id", id);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            private boolean uniqueIdFound = true;
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                Log.d("Debug", "Entered onComplete for getID");
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        if (document.exists()) {
-                            //id already exists
-                            callBack.onFirestoreResult(true);
-                            return;
-                        }
-                    }
-                }
-                //id does not exist
-                callBack.onFirestoreResult(false);
-            }
-        });
+        query.get().addOnCompleteListener(task -> callBack.onFirestoreResult(task.isSuccessful() && !task.getResult().isEmpty()));
     }
 
     //Adds all the User information to the Firestore and creates the Static User object
-    private static void completeRegistration(Context activity, Map user, String username, FirestoreCallBack callback){
-
-        //Adds the Map into Firestore
+    private static void completeRegistration(Context activity, Map<String, Object> user, String username, FirestoreCallBack callback){
         db.collection("appUsers").document(username).set(user)
-                .continueWithTask(new Continuation<Void, Task<DocumentSnapshot>>() {
-                    @Override
-                    public Task<DocumentSnapshot> then(@NonNull Task<Void> task) throws Exception {
-                        return db.collection("appUsers").document(username).get();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            userDocument.setFoundDocument(task.getResult());
-                            Log.d("register", "Added");
-                            Toast.makeText(activity, "You have registered successfully!", Toast.LENGTH_SHORT).show();
-
-                            //Creates a Static User object to be used throughout the session of the app
-                            Firestore.initializeUserObject(activity, user, true, callback);
-                        } else {
-                            Log.e("register", "Failed to add user", task.getException());
-                            Toast.makeText(activity, "Failed to register. Please try again.", Toast.LENGTH_SHORT).show();
-                            callback.onFirestoreResult(false);
-                        }
+                .continueWithTask(task -> db.collection("appUsers").document(username).get())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        userDocument.setFoundDocument(task.getResult());
+                        Toast.makeText(activity, "You have registered successfully!", Toast.LENGTH_SHORT).show();
+                        Firestore.initializeUserObject(activity, user, true, callback);
+                    } else {
+                        Toast.makeText(activity, "Failed to register. Please try again.", Toast.LENGTH_SHORT).show();
+                        callback.onFirestoreResult(false);
                     }
                 });
     }

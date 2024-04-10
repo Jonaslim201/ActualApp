@@ -1,5 +1,6 @@
 package com.example.actualapp.recyclerAdapters;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,26 +14,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.FriendWorkout;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
 
-    private List<FriendWorkout> leaderboard;
+    LayoutInflater mInflater;
+    private ArrayList<FriendWorkout> leaderboard;
 
-    public LeaderboardAdapter(List<FriendWorkout> leaderboard) {
+    public LeaderboardAdapter(Context context, ArrayList<FriendWorkout> leaderboard) {
+        mInflater = LayoutInflater.from(context);
         this.leaderboard = leaderboard;
+    }
+
+    public void setLeaderboard(ArrayList<FriendWorkout> leaderboard) {
+        this.leaderboard = leaderboard;
+        Log.d("leaderboardAdapter", this.leaderboard.toString());
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.leaderboard_individual_card, parent, false);
+        View view = mInflater.inflate(R.layout.leaderboard_individual_card, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Log.d("leaderboardAdapter", leaderboard.get(position).toString());
         FriendWorkout workout = leaderboard.get(position);
 
         holder.textRank.setText(String.valueOf(position + 1));
