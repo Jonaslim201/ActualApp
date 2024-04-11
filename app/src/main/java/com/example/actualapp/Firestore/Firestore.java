@@ -5,7 +5,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.actualapp.RigidBodyApp;
 import com.example.actualapp.exerciseRelated.FriendWorkout;
 import com.example.actualapp.exerciseRelated.Workout;
 import com.example.actualapp.exerciseRelated.WorkoutKey;
@@ -14,6 +13,7 @@ import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserExercise;
 import com.example.actualapp.userRelated.UserFriends;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,7 +38,7 @@ public class Firestore implements FirestoreCallBack {
     @SuppressLint("StaticFieldLeak")
     static FirebaseFirestore db;
     static holdDocument userDocument;
-    static ExecutorService executorService = Executors.newFixedThreadPool(4);
+    public static ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     Firestore(){
 
@@ -76,6 +76,7 @@ public class Firestore implements FirestoreCallBack {
             latch.countDown();
         });
 
+
         //2. Getting friend list and friend requests
         executorService.execute(() -> {
             if (registering){
@@ -89,17 +90,37 @@ public class Firestore implements FirestoreCallBack {
             } else {
                 ArrayList<DocumentReference> friendsList = (ArrayList<DocumentReference>) userDocument.getFoundDocument().get("friends");
                 Map<String, Object> friendsRequests = (Map<String, Object>) userDocument.getFoundDocument().get("friendRequests");
-
+                Log.d("Firestore", userDoc.getPath());
+                Log.d("Firestore", "friendsList: " + friendsList);
                 if (friendsList != null && !friendsList.isEmpty()){
-                    UserFriends.setFriends(friendsList);
+                    UserFriends.setFriendDocuments(friendsList);
+                } else {
+                    UserFriends.setFriendDocuments(new ArrayList<>());
                 }
 
                 if (friendsRequests != null && !friendsRequests.isEmpty()){
                     ArrayList<DocumentReference> receivedRequests = (ArrayList<DocumentReference>) friendsRequests.get("received");
                     ArrayList<DocumentReference> sentRequests = (ArrayList<DocumentReference>) friendsRequests.get("sent");
 
-                    UserFriends.setReceivedFriendRequests(receivedRequests);
-                    UserFriends.setSentFriendRequests(sentRequests);
+                    if (receivedRequests == null || receivedRequests.isEmpty()){
+                        receivedRequests = new ArrayList<>();
+                    } else {
+                        UserFriends.setReceivedFriendRequests(receivedRequests, new FirestoreCallBack() {
+                            @Override
+                            public void onFirestoreResult(boolean success) {
+                                Log.d("Firestore", "Received friend requests set");
+                            }
+                        });
+                    }
+
+                    if (sentRequests == null || sentRequests.isEmpty()){
+                        sentRequests = new ArrayList<>();
+                    } else {
+                        UserFriends.setSentFriendRequests(sentRequests);
+                    }
+
+                    Log.d("Firestore", receivedRequests.toString());
+
                 }
             }
 
@@ -141,7 +162,6 @@ public class Firestore implements FirestoreCallBack {
         }
 
         callback.onFirestoreResult(true);
-        RigidBodyApp.startListeners();
         Toast.makeText(activity, "Login successful.", Toast.LENGTH_SHORT).show();
     }
 
@@ -162,7 +182,7 @@ public class Firestore implements FirestoreCallBack {
     private static void getFirestoreDocuments(QuerySnapshot querySnapshot, String collectionName) {
 
         HashMap<WorkoutKey, List<Workout>> workoutMap = new HashMap<>();
-        HashMap<WorkoutKey, List<FriendWorkout>> friendWorkoutMap = new HashMap<>();
+        HashMap<WorkoutKey, ArrayList<FriendWorkout>> friendWorkoutMap = new HashMap<>();
         HashMap<String, DocumentSnapshot> leaderboardDocumentSnapshots = new HashMap<>();
 
         for (QueryDocumentSnapshot document : querySnapshot) {
@@ -173,17 +193,15 @@ public class Firestore implements FirestoreCallBack {
                 if (exerciseData instanceof ArrayList){
                     ArrayList<HashMap<String, Object>> exerciseDataArray = (ArrayList<HashMap<String, Object>>) exerciseData;
                     List<Workout> workouts;
-                    exerciseDataArray.remove(0);
 
                     workouts = exerciseDataArray.stream().map(Workout::new).collect(Collectors.toList());
                     WorkoutKey key = new WorkoutKey(workoutType, exerciseName);
                     workoutMap.put(key, workouts);
 
-
                 } else if (exerciseData instanceof Map){
                     leaderboardDocumentSnapshots.put(workoutType, document);
                     Map<String, Object> exerciseDataMap = (Map<String, Object>) exerciseData;
-                    List<FriendWorkout> workouts = new ArrayList<>();
+                    ArrayList<FriendWorkout> workouts = new ArrayList<>();
                     WorkoutKey key = new WorkoutKey(workoutType, exerciseName);
 
                     exerciseDataMap.forEach((userID, friendWorkoutData)->{
@@ -243,6 +261,10 @@ public class Firestore implements FirestoreCallBack {
     @Override
     public void onFirestoreResult(boolean success) {
 
+    }
+
+    public static void logout(){
+        FirebaseAuth.getInstance().signOut();
     }
 }
 

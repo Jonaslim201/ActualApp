@@ -31,6 +31,11 @@ public class UserExercise extends User {
     }
 
     public static ArrayList<Workout> getWorkouts(WorkoutKey key) {
+        if(workoutMap == null) {
+            workoutMap = new HashMap<>();
+            return null;
+        }
+
         if (workoutMap.get(key) == null) {
             return null;
         } else {
@@ -40,17 +45,24 @@ public class UserExercise extends User {
 
     //Inserts the new Workout instance through Firestore
     public static void addWorkout(WorkoutKey key, Workout workout, FirestoreCallBack firestoreCallBack) {
+        boolean workoutExists = false;
         Log.d("UserExercise", "addWorkout:" + workout.getName() + " " + workout.getWeightLifted() + " " + workout.getDateOfWorkout() + " " + workout.getNumOfReps() + " " + key.getCategory() + " " + key.getExerciseName());
-        ExerciseFirestore.insertWorkout(key.getCategory(), workout, firestoreCallBack);
-
         List<Workout> workoutList = workoutMap.get(key);
         if (workoutList == null) {
             workoutList = new ArrayList<>();
+            workoutExists = false;
+        } else {
+            String dateOfNewWorkout = workout.getDateOfWorkout();
+            workoutExists = workoutList.stream().anyMatch(workout1 -> workout1.getDateOfWorkout().equals(dateOfNewWorkout));
         }
-        Log.d("UserExercise", "addWorkout:" + workoutList.size());
-        workoutList.add(workout);
-        workoutMap.put(key, workoutList);
-        Log.d("UserExercise", "afteraddWorkout:" + workoutMap.get(key).size());
+
+        if (!workoutExists) {
+            Log.d("UserExercise", "addWorkout:" + workoutList.size());
+            workoutList.add(workout);
+            workoutMap.put(key, workoutList);
+            Log.d("UserExercise", "afteraddWorkout:" + workoutMap.get(key).size());
+            ExerciseFirestore.insertWorkout(key.getCategory(), workout, firestoreCallBack);
+        }
     }
 
 }

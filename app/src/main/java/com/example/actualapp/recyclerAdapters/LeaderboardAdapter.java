@@ -61,6 +61,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             holder.itemView.setBackgroundResource(R.color.secondPlace);
         } else if (position == 2) {
             holder.itemView.setBackgroundResource(R.color.thirdPlace);
+        } else {
+            holder.itemView.setBackgroundResource(R.color.matteWhite);
         }
     }
 

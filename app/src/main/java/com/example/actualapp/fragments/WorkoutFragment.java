@@ -29,7 +29,6 @@ import java.util.Date;
 public class WorkoutFragment extends Fragment {
 
     private View workoutView;
-    private RecyclerView mRecyclerView;
     private workoutListAdapter mAdapter;
     ArrayList<Workout> workoutRecords;
     GraphView graphView;
@@ -64,29 +63,34 @@ public class WorkoutFragment extends Fragment {
         this.initializationListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         workoutView = inflater.inflate(R.layout.graphview_workouts_layout, container, false);
 
         Bundle args = getArguments();
-        this.exerciseName = args.getString("exerciseName");
-        this.category = args.getString("category");
-        Log.d("workoutFragment", "onCreateView: " + exerciseName + " " + category);
-        if (args.getParcelableArrayList("workoutRecords") != null && workoutRecords == null){
+        if (args != null) {
+            this.exerciseName = args.getString("exerciseName");
+            this.category = args.getString("category");
             this.workoutRecords = args.getParcelableArrayList("workoutRecords");
-            Log.d("workoutFragment", "onCreateView: " + workoutRecords.toString());
+            Log.d("workoutFragment", "onCreateView: " + exerciseName + " " + category);
         }
 
         if(workoutRecords != null && !workoutRecords.isEmpty()){
             workoutView.findViewById(R.id.noRecords).setVisibility(View.GONE);
             recordsListInit();
-            graphInit(new FirestoreCallBack() {
-                @Override
-                public void onFirestoreResult(boolean success) {
-                    if (initializationListener != null && success) {
-                        initializationListener.onInitializationComplete();
-                    }
+            graphInit(success -> {
+                if (initializationListener != null && success) {
+                    initializationListener.onInitializationComplete();
                 }
             });
         } else {
@@ -97,7 +101,7 @@ public class WorkoutFragment extends Fragment {
     }
 
     private void recordsListInit() {
-        mRecyclerView = workoutView.findViewById(R.id.recordsList);
+        RecyclerView mRecyclerView = workoutView.findViewById(R.id.recordsList);
         mAdapter = new workoutListAdapter(workoutView.getContext(), workoutRecords);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(workoutView.getContext()));
@@ -109,7 +113,7 @@ public class WorkoutFragment extends Fragment {
 
         graphView.removeAllSeries();
         DataPoint[] dataPoints=new DataPoint[workoutRecords.size()];
-        float maxWeight=0;
+        float maxWeight = 0;
         //Loop to create Datapoint ArrayList for series
         for (int i = 0; i < workoutRecords.size(); i++) {
             if (workoutRecords.get(i).getWeightLifted()>maxWeight){
@@ -148,7 +152,24 @@ public class WorkoutFragment extends Fragment {
         // as we use dates as labels, the human rounding to nice readable numbers is not necessary
         graphView.getGridLabelRenderer().setHumanRounding(false);
         callBack.onFirestoreResult(true);
+    }
 
+    private void updateGraphView(Workout workout) {
+        // Create a new DataPoint for the new workout
+        DataPoint newDataPoint = new DataPoint(workout.dateCal().getTime(), workout.getWeightLifted());
+
+        // Add the new DataPoint to the existing series
+        LineGraphSeries<DataPoint> series = (LineGraphSeries<DataPoint>) graphView.getSeries().get(0);
+        series.appendData(newDataPoint, true, workoutRecords.size());
+
+        // Update the Y-axis bounds if necessary
+        double maxY = graphView.getViewport().getMaxY(false);
+        if (workout.getWeightLifted() > maxY) {
+            graphView.getViewport().setMaxY(workout.getWeightLifted() + 50);
+        }
+
+        // Update the X-axis bounds
+        graphView.getViewport().setMaxX(newDataPoint.getX());
     }
 
     public void addWorkout(Workout workout) {
@@ -161,7 +182,6 @@ public class WorkoutFragment extends Fragment {
                         workoutRecords = new ArrayList<>();
                     }
                     workoutRecords.add(workout);
-                    Log.d("workoutFragment", "addWorkout: " + workoutRecords.toString());
 
                     if (mAdapter == null) {
                         recordsListInit();
@@ -169,15 +189,15 @@ public class WorkoutFragment extends Fragment {
                         mAdapter.notifyItemInserted(workoutRecords.size() - 1);
                     }
 
-                    graphInit(new FirestoreCallBack() {
-                        @Override
-                        public void onFirestoreResult(boolean success) {
+                    if (graphView == null){
+                        graphInit(success -> {
                             if (initializationListener != null && success) {
-                                workoutView.findViewById(R.id.noRecords).setVisibility(View.GONE);
                                 initializationListener.onInitializationComplete();
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        updateGraphView(workout);
+                    }
                 }
             });
 

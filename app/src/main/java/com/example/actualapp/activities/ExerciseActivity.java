@@ -5,13 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.actualapp.FeedActivity;
 import com.example.actualapp.Firestore.FirestoreCallBack;
@@ -33,15 +37,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 
 //Individual Exercise pages, temp for Mike
 public class ExerciseActivity extends AppCompatActivity implements WorkoutFragment.InitializationListener, LeaderboardChangeListener {
 
-    public static boolean isActive = false;
-    public static String exerciseName;
-    public static String category;
+    public static ExerciseActivity instance;
+    private ViewPager2 viewPager;
+
+    public String exerciseName;
+
+    public String category;
     private WorkoutKey key;
     ArrayList<Workout> workoutRecords;
     private ArrayList<FriendWorkout> leaderboardWorkouts;
@@ -53,7 +61,7 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        instance = this;
         Intent intent = getIntent();
         Bundle names = intent.getExtras();
         exerciseName = names.getString("exerciseName");
@@ -70,6 +78,37 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
         createView();
     }
 
+    private void setupViewPager(ViewPager2 viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        adapter.addFragment(workoutFragment);
+        adapter.addFragment(leaderboardFragment);
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentStateAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+
+        public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment) {
+            mFragmentList.add(fragment);
+        }
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -77,39 +116,58 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
         leaderboardFragment = null;
         workoutFragment = null;
         FirestoreListener.unregisterLeaderboardListener(this);
-        isActive = false;
-    }
-
-    public void getLeaderboard(){
-        Log.d("EXERCISEACTIVITY", "GETTING LEADERBOARD");
     }
 
     public void createView(){
-        FirestoreListener.registerLeaderboardListener(this);
         setContentView(R.layout.individual_exercise);
+
+        viewPager = findViewById(R.id.viewPager2);
+        setupViewPager(viewPager);
+
+        viewPager.setOffscreenPageLimit(1);
+
+        viewPager.setPageTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                if (position < -1) {
+                    // This page is way off-screen to the left.
+                    page.setAlpha(0);
+                } else if (position <= 1) {
+                    // Modify the default slide transition to shrink the page as well
+                    page.setAlpha(1);
+                    page.setTranslationX(0);
+                    page.setScaleX(1);
+                    page.setScaleY(1);
+                } else {
+                    // This page is way off-screen to the right.
+                    page.setAlpha(0);
+                }
+            }
+        });
 
         workoutFragment.setInitializationListener(this);
 
         initialiseButtons();
+
         SwitchMaterial leaderboardSwitch = findViewById(R.id.leaderboardSwitch);
-        leaderboardSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                if (isChecked) {
-                    transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-                    transaction.replace(R.id.fragmentContainer, leaderboardFragment);
-                } else {
-                    transaction.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                    transaction.replace(R.id.fragmentContainer, workoutFragment);
-                }
-                transaction.addToBackStack(null).commit();
+        leaderboardSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if (isChecked) {
+                viewPager.setCurrentItem(1);
+            } else {
+                viewPager.setCurrentItem(0);
             }
+            transaction.addToBackStack(null).commit();
         });
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, workoutFragment).addToBackStack(null).commit();
-        isActive = true;
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                SwitchMaterial leaderboardSwitch = findViewById(R.id.leaderboardSwitch);
+                leaderboardSwitch.setChecked(position == 1);
+            }
+        });
     }
 
 
@@ -144,7 +202,6 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
             }
         });
     }
-
 
     public void showAlertDialogButtonClicked(View view){
         //Create an alert builder
@@ -199,19 +256,23 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
         });
     }
 
-
     @Override
     public void onInitializationComplete() {
-        getSupportFragmentManager().beginTransaction().addToBackStack(null).commit();
+        FirestoreListener.registerLeaderboardListener(this);
+    }
+
+    public boolean isInitialized() {
+        return viewPager != null && workoutFragment != null && leaderboardFragment != null;
     }
 
     @Override
     public void onLeaderboardChanged(WorkoutKey key) {
         Log.d("EXERCISEACTIVITY", key.toString());
-        getLeaderboard();
         ArrayList<FriendWorkout> newRecords = Leaderboard.getLeaderboard(key);
+        Log.d("EXERCISEACTIVITY", newRecords.toString());
         if (leaderboardFragment.getView() == null){
-            leaderboardFragment = LeaderboardFragment.newInstance(exerciseName, category, newRecords);
+            Log.d("EXERCISEACTIVITY", "null");
+            leaderboardFragment.setLeaderboardWorkouts(newRecords);
         } else {
             leaderboardFragment.addWorkout(newRecords);
         }

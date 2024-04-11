@@ -124,7 +124,7 @@ public class FeedActivity extends AppCompatActivity {
 
                 boolean isValid = idText.length() > 0;
                 boolean addingThemselves = idText.equals(User.getId());
-                boolean alreadyAdded = UserFriends.getFriends().containsKey(idText);
+                boolean alreadyAdded = UserFriends.getFriendDocuments().containsKey(idText);
                 boolean alreadyRequested = UserFriends.getSentFriendRequests().containsKey(idText);
 
                 Log.d("FeedActivity", UserFriends.getSentFriendRequests().toString());

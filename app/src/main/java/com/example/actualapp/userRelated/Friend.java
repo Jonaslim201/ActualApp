@@ -1,6 +1,6 @@
 package com.example.actualapp.userRelated;
 
-public class Friend {
+public class Friend implements Comparable<Friend> {
 
     private String username;
     private String id;
@@ -10,6 +10,11 @@ public class Friend {
         this.username = username;
         this.id  = id;
         this.email = email;
+    }
+
+    public Friend(String username, String id){
+        this.username = username;
+        this.id = id;
     }
 
     public String getId() {
@@ -23,6 +28,11 @@ public class Friend {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public int compareTo(Friend otherFriend) {
+        return this.username.compareTo(otherFriend.getUsername());
     }
 
 
@@ -49,7 +59,8 @@ public class Friend {
         public Friend Build(){
             return new Friend(username, id, email);
         }
-
     }
+
+
 
 }

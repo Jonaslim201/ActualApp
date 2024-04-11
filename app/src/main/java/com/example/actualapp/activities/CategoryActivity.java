@@ -11,12 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.actualapp.recyclerAdapters.ExerciseRecyclerAdapter;
 import com.example.actualapp.FeedActivity;
 import com.example.actualapp.Firestore.ExerciseFirestore;
+import com.example.actualapp.MainActivity;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Exercise;
 import com.example.actualapp.exerciseRelated.ExerciseCallBack;
+import com.example.actualapp.recyclerAdapters.ExerciseRecyclerAdapter;
 
 import java.util.ArrayList;
 
@@ -68,7 +69,9 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 backButton.setBackground(getDrawable(R.drawable.circular_button));
-                startActivity(new Intent(CategoryActivity.this, ExerciseCategoriesActivity.class));
+                Intent intent = new Intent(CategoryActivity.this, MainActivity.class);
+                intent.putExtra("fragment_name", "workouts_fragment");
+                startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.stay);
             }
         });

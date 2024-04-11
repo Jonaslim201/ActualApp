@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.Firestore.RegisterFirestore;
 import com.example.actualapp.LoadingButton;
+import com.example.actualapp.MainActivity;
 import com.example.actualapp.R;
+import com.example.actualapp.RigidBodyApp;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -135,7 +137,8 @@ public class RegisterPageActivity extends AppCompatActivity {
 
     //Starts app
     public void startApp(){
-        Intent myActivity = new Intent(this, ExerciseCategoriesActivity.class);
+        RigidBodyApp.startListeners();
+        Intent myActivity = new Intent(this, MainActivity.class);
         startActivity(myActivity);
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
     }

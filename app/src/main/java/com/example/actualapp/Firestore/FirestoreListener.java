@@ -27,6 +27,9 @@ public class FirestoreListener extends Firestore{
     private final List<ListenerRegistration> listeners = new ArrayList<>();
     private static final Set<WeakReference<LeaderboardChangeListener>> leaderboardListeners = new HashSet<>();
 
+    private static FriendRequestChangeListener friendRequestListener;
+    private static FriendListChangeListener friendListListener;
+
     private FirestoreListener(){
     }
 
@@ -48,6 +51,22 @@ public class FirestoreListener extends Firestore{
         if (!listeners.isEmpty()){
             listeners.clear();
         }
+    }
+
+    public static void setFriendRequestListener(FriendRequestChangeListener friendRequestListener) {
+        FirestoreListener.friendRequestListener = friendRequestListener;
+    }
+
+    public static void unregisterFriendRequestListener(FriendRequestChangeListener friendRequestListener){
+        FirestoreListener.friendRequestListener = null;
+    }
+
+    public static void setFriendListListener(FriendListChangeListener friendListListener) {
+        FirestoreListener.friendListListener = friendListListener;
+    }
+
+    public static void unregisterFriendListListener(FriendListChangeListener friendListListener){
+        FirestoreListener.friendListListener = null;
     }
 
     //Register the listener
@@ -79,7 +98,7 @@ public class FirestoreListener extends Firestore{
             if (error != null){
                 Log.d("FriendFirestore", "Failed to listen.");
             } else {
-
+                Log.d("FriendFirestore", "start listen succeeded");
                 //If the change is not null and exists, update friend requests
                 if(amendedValue != null && amendedValue.exists() && amendedValue.contains("friendRequests")){
 
@@ -87,7 +106,14 @@ public class FirestoreListener extends Firestore{
                     Map<String, Object> friendRequests = (Map<String, Object>) amendedValue.get("friendRequests");
 
                     if (friendRequests != null){
-                        UserFriends.setReceivedFriendRequests((ArrayList<DocumentReference>) friendRequests.get("received"));
+                        UserFriends.setReceivedFriendRequests((ArrayList<DocumentReference>) friendRequests.get("received"), new FirestoreCallBack() {
+                            @Override
+                            public void onFirestoreResult(boolean success) {
+                                if (success && friendRequestListener != null){
+                                    friendRequestListener.onFriendRequestChanged();
+                                }
+                            }
+                        });
                         UserFriends.setSentFriendRequests((ArrayList<DocumentReference>) friendRequests.get("sent"));
                     }
                     Log.d("FriendFirestore", "listen succeeded");
@@ -112,8 +138,14 @@ public class FirestoreListener extends Firestore{
 
                     //Get the friends array of the user
                     List<DocumentReference> friends = (List<DocumentReference>) amendedValue.get("friends");
-                    if (friends != null){
-                        UserFriends.setFriends((ArrayList<DocumentReference>) friends);
+                    Log.d("FriendFirestore", "friends: " + friends.size());
+                    if (friends != null && !friends.isEmpty()){
+                        for (DocumentReference friendDoc : friends) {
+                            if (friendDoc != null){
+                                UserFriends.setFriendDocuments((ArrayList<DocumentReference>) friends);
+                            }
+                        }
+
                     }
                     Log.d("FriendFirestore", "listen succeeded");
 
@@ -165,7 +197,7 @@ public class FirestoreListener extends Firestore{
                                                 Map<String, Object> newRecord = (Map<String, Object>) value;
                                                 Leaderboard.updateLeaderboard(category, exerciseName, newRecord);
 
-                                                if (ExerciseActivity.isActive) {
+                                                if (ExerciseActivity.instance != null && ExerciseActivity.instance.isInitialized()) {
                                                     FirestoreListener.notifyLeaderboardListeners(new WorkoutKey(category, exerciseName));
                                                 }
                                             }

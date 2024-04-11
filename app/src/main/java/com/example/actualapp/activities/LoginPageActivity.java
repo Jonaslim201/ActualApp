@@ -2,6 +2,7 @@ package com.example.actualapp.activities;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,8 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.Firestore.LoginFirestore;
-import com.example.actualapp.LoadingButton;
+import com.example.actualapp.MainActivity;
 import com.example.actualapp.R;
+import com.example.actualapp.RigidBodyApp;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -36,50 +38,59 @@ public class LoginPageActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page_activity);
 
+        initializeViews();
         initializeButton();
         initializeTextWatchers();
     }
 
+    private void initializeViews(){
+        loginButton=findViewById(R.id.loginButton);
+        username=findViewById(R.id.username);
+        password=findViewById(R.id.password);
+    }
+
     //Initializes the login button
     private void initializeButton(){
-        loginButton = findViewById(R.id.loginButton);
-        final LoadingButton animationButton = new LoadingButton(loginButton, LoginPageActivity.this, username, password);
-
-        //Disabling button before the user inputs
-        loginButton.setEnabled(false);
-
-        //Setting click listener
         loginButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                //Collects the username and password field and puts them in a HashMap
-                Map<String, Object> user = new HashMap<>();
-                user.put("username", Objects.requireNonNull(username.getText()).toString());
-                user.put("password", Objects.requireNonNull(password.getText()).toString());
+                //Display loading dialog
+                ProgressDialog progressDialog = ProgressDialog.show(LoginPageActivity.this,"",
+                        "Logging in...",true);
 
-                //Button calls the morphDoneAndRevert method in the LoadingButton Class to check user credentials
-                animationButton.morphDoneAndRevert();
+                //Perform login asynchronously
+                performLogin(progressDialog);
+            }
+        });
+    }
 
-                //Accesses Firestore class to login user
-                LoginFirestore.loginUser(user, LoginPageActivity.this, new FirestoreCallBack() {
-                    @Override
-                    public void onFirestoreResult(boolean success) {
-                        if (success){
-                            //If user inputs the correct credentials, enters the app.
-                            startApp();
-                        } else {
-                            //If user inputs the wrong credentials cuz hes a dumbass then it reverts the button animation
-                            Toast.makeText(LoginPageActivity.this, "Login unsuccessful.", Toast.LENGTH_SHORT).show();
-                        }
-                        animationButton.revert(3000L);
-                    }
-                });
+    private void performLogin(ProgressDialog progressDialog){
+        //Collects the username and password field and puts them in a HashMap
+        Map<String, Object> user = new HashMap<>();
+        user.put("username", Objects.requireNonNull(username.getText()).toString());
+        user.put("password", Objects.requireNonNull(password.getText()).toString());
+
+        //Accesses Firestore class to login user
+        LoginFirestore.loginUser(user, LoginPageActivity.this, new FirestoreCallBack() {
+            @Override
+            public void onFirestoreResult(boolean success) {
+                // Dismiss loading dialog
+                progressDialog.dismiss();
+
+                if (success){
+                    //If user inputs the correct credentials, enters the app.
+                    startApp();
+                } else {
+                    //If user inputs the wrong credentials cuz hes a dumbass then it reverts the button animation
+                    Toast.makeText(LoginPageActivity.this, "Login unsuccessful. Try again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
     //Starts the app
     public void startApp(){
-        startActivity(new Intent(this, ExerciseCategoriesActivity.class));
+        RigidBodyApp.startListeners();
+        startActivity(new Intent(this, MainActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
     }
 
@@ -141,14 +152,14 @@ public class LoginPageActivity extends AppCompatActivity{
     //Animation for the text fields below
     private void animateToTeal(View view) {
         // Animate the background color to teal
-        ObjectAnimator animator = ObjectAnimator.ofObject(view.getBackground(), "tint", new ArgbEvaluator(), Color.parseColor("#00000000"), Color.parseColor("#38304c"));
+        ObjectAnimator animator = ObjectAnimator.ofObject(view.getBackground(), "tint", new ArgbEvaluator(), Color.parseColor("#00000000"), Color.parseColor("#FF03DAC5"));
         animator.setDuration(300);
         animator.start();
     }
 
     private void animateToOriginalColor(View view) {
         // Animate the background color back to the original color
-        ObjectAnimator animator = ObjectAnimator.ofObject(view.getBackground(), "tint", new ArgbEvaluator(), Color.parseColor("#38304c"), Color.parseColor("#00000000"));
+        ObjectAnimator animator = ObjectAnimator.ofObject(view.getBackground(), "tint", new ArgbEvaluator(), Color.parseColor("#FF03DAC5"), Color.parseColor("#00000000"));
         animator.setDuration(300);
         animator.start();
         password.setHintTextColor(getColor(R.color.matteWhite));
@@ -159,7 +170,5 @@ public class LoginPageActivity extends AppCompatActivity{
         startActivity(new Intent(this, RegisterPageActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
     }
-
-
 }
 

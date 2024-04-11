@@ -6,6 +6,6 @@
 
     <dimen name="exerciseSquareButtons">100dp</dimen>
     <dimen name="gridLayoutMargin">27.5dp</dimen>
-    <dimen name="layoutMarginTopCategories">130dp</dimen>
+    <dimen name="layoutMarginTopCategories">45dp</dimen>
     <dimen name="inBetweenTopMargin">27.5dp</dimen>
 </resources>

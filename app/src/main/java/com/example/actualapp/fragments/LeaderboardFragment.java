@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,15 +28,14 @@ public class LeaderboardFragment extends Fragment {
     private String exerciseName;
     private String category;
     private ArrayList<FriendWorkout> leaderboardWorkouts;
-
-    private RecyclerView recyclerViewLeaderboard;
     private LeaderboardAdapter leaderboardAdapter;
+    private static Bundle args;
 
 
     public static LeaderboardFragment newInstance(String exerciseName, String category, ArrayList<FriendWorkout> leaderboardRecords){
         Log.d("LEADERBOARD", "INITIALISING INSTANCE");
         LeaderboardFragment fragment = new LeaderboardFragment();
-        Bundle args = new Bundle();
+        args = new Bundle();
         args.putString("exerciseName", exerciseName);
         args.putString("category", category);
         args.putParcelableArrayList("leaderboardRecords", leaderboardRecords);
@@ -50,8 +47,17 @@ public class LeaderboardFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onResume() {
+        super.onResume();
+        if (leaderboardAdapter != null){
+            leaderboardAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    public void setLeaderboardWorkouts(ArrayList<FriendWorkout> leaderboardWorkouts) {
+        args.remove("leaderboardRecords");
+        args.putParcelableArrayList("leaderboardRecords", leaderboardWorkouts);
     }
 
     @Nullable
@@ -61,10 +67,11 @@ public class LeaderboardFragment extends Fragment {
         Log.d("LEADERBOARD", "CREATING VIEW");
 
         Bundle args = getArguments();
-        exerciseName = args.getString("exerciseName");
-        Log.d("workoutFragment", exerciseName);
-        category = args.getString("category");
-        leaderboardWorkouts = args.getParcelableArrayList("leaderboardRecords");
+        if (args != null){
+            exerciseName = args.getString("exerciseName");
+            category = args.getString("category");
+            leaderboardWorkouts = args.getParcelableArrayList("leaderboardRecords");
+        }
 
         activity = (AppCompatActivity) getActivity();
         if(leaderboardWorkouts != null && !leaderboardWorkouts.isEmpty()){
@@ -73,32 +80,28 @@ public class LeaderboardFragment extends Fragment {
             leaderboardView.findViewById(R.id.noRecords).setVisibility(View.VISIBLE);
         }
 
-        setView();
-        return leaderboardView;
-    }
-
-    public View getView(){
+//        setView();
         return leaderboardView;
     }
 
     public void recordsListInit(){
-        recyclerViewLeaderboard = leaderboardView.findViewById(R.id.leaderboardRecyclerView);
+        RecyclerView recyclerViewLeaderboard = leaderboardView.findViewById(R.id.leaderboardRecyclerView);
         leaderboardAdapter = new LeaderboardAdapter(leaderboardView.getContext(), leaderboardWorkouts);
         recyclerViewLeaderboard.setAdapter(leaderboardAdapter);
         recyclerViewLeaderboard.setLayoutManager(new LinearLayoutManager(leaderboardView.getContext()));
     }
 
-    public void setView(){
-        if(activity!=null){
-            Toolbar toolbar = leaderboardView.findViewById(R.id.leaderboardExerciseName);;
-            activity.setSupportActionBar(toolbar);
-            ActionBar actionBar = activity.getSupportActionBar();
-
-            if(actionBar != null){
-                actionBar.setTitle(exerciseName);
-            }
-        }
-    }
+//    public void setView(){
+//        if(activity!=null){
+//            Toolbar toolbar = leaderboardView.findViewById(R.id.leaderboardExerciseName);;
+//            activity.setSupportActionBar(toolbar);
+//            ActionBar actionBar = activity.getSupportActionBar();
+//
+//            if(actionBar != null){
+//                actionBar.setTitle(exerciseName);
+//            }
+//        }
+//    }
 
     public void addWorkout(ArrayList<FriendWorkout> workouts) {
         Log.d("LEADERBOARD", workouts.toString());

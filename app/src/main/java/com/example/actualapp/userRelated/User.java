@@ -26,6 +26,10 @@ public class User {
     public User(){
     }
 
+    public static void setUsername(String username) {
+        User.username = username;
+    }
+
     public static DocumentReference getUserDoc() {
         return userDoc;
     }

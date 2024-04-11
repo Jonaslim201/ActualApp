@@ -16,7 +16,7 @@ public class ExerciseCategoriesActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.exercise_categories);
+        setContentView(R.layout.fragment_workouts);
 
         String[] exerciseArray = ExerciseFirestore.getExerciseArray();
 

@@ -103,22 +103,24 @@ public class ExerciseFirestore extends Firestore{
 
                     if (workout.getWeightLifted() > highScoreWeight ||
                             (workout.getWeightLifted() == highScoreWeight && workout.getNumOfReps() > highScoreReps)) {
-                        existingWorkouts.set(0, workout);
-                        addToLeaderboard(category, workout);
+                        existingWorkouts.add(0, workout);
+                    } else {
+                        existingWorkouts.add(workout);
                     }
 
-                    existingWorkouts.addAll(toAddWorkouts);
-
-                    UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), existingWorkouts)
-                            .addOnSuccessListener(unused -> callBack.onFirestoreResult(true))
-                            .addOnFailureListener(e -> callBack.onFirestoreResult(false));
+                    UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), existingWorkouts).addOnSuccessListener(unused -> {
+                                callBack.onFirestoreResult(true);
+                                addToLeaderboard(category, workout);
+                            }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
 
                 } else {
                     toAddWorkouts.add(0,workout);
-                    UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), toAddWorkouts)
-                            .addOnSuccessListener(unused -> callBack.onFirestoreResult(true))
-                            .addOnFailureListener(e -> callBack.onFirestoreResult(false));
-                    addToLeaderboard(category, workout);
+                    UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), toAddWorkouts).addOnSuccessListener(unused -> {
+                        addToLeaderboard(category, workout);
+                        callBack.onFirestoreResult(true);
+                    }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
+
+
                 }
             } else {
                 Log.d("ExerciseFirestore", "Failed to get document.");
@@ -134,7 +136,7 @@ public class ExerciseFirestore extends Firestore{
         FriendWorkout newPR = new FriendWorkout(workout, User.getId(), User.getUsername(), R.drawable.baseline_person_24);
 
         Leaderboard.getLeaderboardCollection().document(category).update(fieldpath, newPR);
-        for (Map.Entry<String, DocumentSnapshot> friends:UserFriends.getFriends().entrySet()){
+        for (Map.Entry<String, DocumentSnapshot> friends:UserFriends.getFriendDocuments().entrySet()){
             friends.getValue().getReference().collection("leaderboards").document(category).update(fieldpath, newPR);
         }
 
@@ -156,6 +158,7 @@ public class ExerciseFirestore extends Firestore{
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         for (CollectionReference collection:collectionReferences) {
+            Log.d("ExerciseFirestore", collection.getPath());
             executorService.execute(() -> {
                 for (String category : exerciseArray) {
                     DocumentReference leaderboard = userLeaderboardCollection.document(category);
