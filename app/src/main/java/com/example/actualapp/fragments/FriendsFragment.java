@@ -53,7 +53,6 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("FriendList", "onCreateView");
         FriendsViewModel friendsViewModel = new ViewModelProvider(this).get(FriendsViewModel.class);
         binding = FragmentFriendsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -65,7 +64,6 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
 
         populateFriendList();
 
-        Log.d("FriendList", "Populated friend list");
         //show friend requests dialog
         handleFriendRequests();
 
@@ -135,15 +133,11 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
         friendList.clear();
 
         friendList = UserFriends.getFriend();
-        for (Friend friend: friendList){
-            Log.d("FriendList", friend.getUsername());
-        }
         friendListAdapter.setFriendList(friendList);
 
         if (friendList.isEmpty()){
             recyclerViewFriendList.setVisibility(View.GONE);
         } else {
-            Log.d("FriendList", friendList.toString());
             recyclerViewFriendList.setVisibility(View.VISIBLE);
             Collections.sort(friendList);
             friendListAdapter.notifyItemRangeChanged(0, friendList.size());
@@ -153,10 +147,6 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
     private void handleFriendRequests() {
         //populate friend requests (to load from database instead)
         friendRequests = UserFriends.getReceivedFriendRequestsList();
-        if (friendRequests != null){
-            Log.d("HandleFriendRequests", friendRequests.toString());
-            Log.d("HandleFriendRequests", "Size: " + friendRequests.size());
-        }
 
         if (friendRequests != null && !friendRequests.isEmpty()){
             showFriendRequestsDialog(friendRequests);
@@ -195,7 +185,6 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
         UserFriends.addFriend(newFriend, new FirestoreCallBack() {
             @Override
             public void onFirestoreResult(boolean success) {
-                Log.d("FriendRequests", "Firestore result: " + success);
                 if (success){
                     UserFriends.deleteFriendRequest(newFriend, new FirestoreCallBack() {
                         @Override

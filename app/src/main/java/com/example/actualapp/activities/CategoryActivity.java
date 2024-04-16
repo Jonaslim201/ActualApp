@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.actualapp.FeedActivity;
+import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.MainActivity;
 import com.example.actualapp.R;
@@ -82,7 +82,7 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 profileButton.setBackground(getDrawable(R.drawable.circular_button));
-                startActivity(new Intent(CategoryActivity.this, FeedActivity.class));
+                startActivity(new Intent(CategoryActivity.this, OldFeedActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
             }
         });

@@ -65,7 +65,7 @@
         </activity>
 
 
-        <activity android:name=".FeedActivity"
+        <activity android:name=".OldFeedActivity"
             android:exported="true">
         </activity>
 

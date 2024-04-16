@@ -56,7 +56,7 @@ public class RegisterFirestore extends Firestore{
                     if (task.isSuccessful()) {
                         userDocument.setFoundDocument(task.getResult());
                         Toast.makeText(activity, "You have registered successfully!", Toast.LENGTH_SHORT).show();
-                        Firestore.initializeUserObject(activity, user, true, callback);
+                        Firestore.initializeUserObject(user, true, callback);
                     } else {
                         Toast.makeText(activity, "Failed to register. Please try again.", Toast.LENGTH_SHORT).show();
                         callback.onFirestoreResult(false);

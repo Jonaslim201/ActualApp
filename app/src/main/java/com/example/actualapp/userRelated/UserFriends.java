@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.actualapp.FeedActivity;
+import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,17 +39,14 @@ public class UserFriends extends User {
 
         if (friends.size() > UserFriends.friend.size()){
             for (DocumentReference friendDoc:friends){
-                Log.d("UserFriends", "setFriendDocuments: " + friendDoc.getId());
                 friendDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.d("UserFriends", "setFriendDocuments: " + documentSnapshot.exists());
                         if (documentSnapshot.exists()){
                             String id = documentSnapshot.get("id").toString();
                             UserFriends.friendDocuments.put(id, documentSnapshot);
                             Friend friend = new Friend.FriendBuilder().setId(id)
                                     .setUsername(documentSnapshot.get("username").toString()).Build();
-                            Log.d("UserFriends", "ADDING FRIEND setFriendDocuments: " + friend.getUsername() + " " + friend.getId());
                             UserFriends.friend.add(friend);
                         }
 
@@ -80,11 +77,7 @@ public class UserFriends extends User {
                     String id = documentSnapshot.get("id").toString();
                     UserFriends.friendDocuments.put(id, documentSnapshot);
                     Friend newFriend = new Friend(documentSnapshot.get("username").toString(), id);
-                    Log.d("UserFriends", "ADDING addFriend: " + newFriend.getUsername() + " " + newFriend.getId());
                     UserFriends.friend.add(newFriend);
-                    for (Friend friend: UserFriends.friend){
-                        Log.d("UserFriends", "addFriend: " + friend.getUsername());
-                    }
                     internalLatch.countDown();
                 }
 
@@ -159,7 +152,7 @@ public class UserFriends extends User {
                 }
             });
         }
-        FeedActivity.updateFriendRequest();
+        OldFeedActivity.updateFriendRequest();
     }
 
     public static void deleteFriendRequest(DocumentReference receivedFriendRequest, FirestoreCallBack callBack){

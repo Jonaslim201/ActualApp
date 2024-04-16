@@ -52,11 +52,10 @@ public class Firestore implements FirestoreCallBack {
 
 
     //Initializes the Static User object with all the user information
-    static void initializeUserObject(Context activity, Map<String, Object> user, Boolean registering, FirestoreCallBack callback){
+    static void initializeUserObject(Map<String, Object> user, Boolean registering, FirestoreCallBack callback){
         //Getting reference to the user document
         DocumentReference userDoc = userDocument.getFoundDocument().getReference();
         CountDownLatch latch = new CountDownLatch(6);
-        Log.d("Firestore", latch.getCount() + "");
 
         //1. Creating the User object
         if (registering){
@@ -82,12 +81,9 @@ public class Firestore implements FirestoreCallBack {
 
         executorService.execute(() -> {
             HomeFragment.initializeFriendWorkouts();
-            FirestoreListener.getInstanceListener().feedListener(true, new FirestoreCallBack() {
-                @Override
-                public void onFirestoreResult(boolean success) {
-                    Log.d("Firestore", "Feed set");
-                    latch.countDown();
-                }
+            FirestoreListener.getInstanceListener().feedListener(true, success -> {
+                Log.d("Firestore", "Feed set");
+                latch.countDown();
             });
         });
 
@@ -121,23 +117,6 @@ public class Firestore implements FirestoreCallBack {
                     if (friendsRequests != null && !friendsRequests.isEmpty()){
                         ArrayList<DocumentReference> sentRequests = (ArrayList<DocumentReference>) friendsRequests.get("sent");
 
-//                    if (receivedRequests == null || receivedRequests.isEmpty()){
-//                        receivedRequests = new ArrayList<>();
-//                        UserFriends.setReceivedFriendRequests(new ArrayList<>(), new FirestoreCallBack() {
-//                            @Override
-//                            public void onFirestoreResult(boolean success) {
-//                                Log.d("Firestore", "Received friend requests set");
-//                            }
-//                        });
-//                    } else {
-//                        UserFriends.setReceivedFriendRequests(receivedRequests, new FirestoreCallBack() {
-//                            @Override
-//                            public void onFirestoreResult(boolean success) {
-//                                Log.d("Firestore", "Received friend requests set");
-//                            }
-//                        });
-//                    }
-
                         if (sentRequests == null || sentRequests.isEmpty()){
                             UserFriends.setSentFriendRequests(new ArrayList<>());
                         } else {
@@ -152,30 +131,20 @@ public class Firestore implements FirestoreCallBack {
             });
 
             innerExecutorService.execute(() -> {
-                FirestoreListener.getInstanceListener().friendReqListener(true, new FirestoreCallBack() {
-                    @Override
-                    public void onFirestoreResult(boolean success) {
-                        Log.d("Firestore", "Friend requests set");
-                        Log.d("Firestore", latch.getCount() + "");
-                        latch.countDown();
-                    }
+                FirestoreListener.getInstanceListener().friendReqListener(true, success -> {
+                    Log.d("Firestore", "Friend requests set");
+                    latch.countDown();
                 });
             });
 
             innerExecutorService.execute(() -> {
-                FirestoreListener.getInstanceListener().friendsListener(true, new FirestoreCallBack() {
-                    @Override
-                    public void onFirestoreResult(boolean success) {
-                        Log.d("Firestore", "Friends set");
-                        Log.d("Firestore", latch.getCount() + "");
-                        latch.countDown();
-                    }
+                FirestoreListener.getInstanceListener().friendsListener(true, success -> {
+                    Log.d("Firestore", "Friends set");
+                    latch.countDown();
                 });
             });
 
             innerExecutorService.shutdown();
-
-            Log.d("Firestore", latch.getCount() + "");
         });
 
         // 3. Getting workout collection
@@ -207,27 +176,18 @@ public class Firestore implements FirestoreCallBack {
                 }
             }).addOnCompleteListener(task -> Log.d("Firestore", "Leaderboard collection set"));
             Leaderboard.setLeaderboardCollection(userDoc.collection("leaderboards"));
-            FirestoreListener.getInstanceListener().leaderboardListener(true, new FirestoreCallBack() {
-                @Override
-                public void onFirestoreResult(boolean success) {
-                    Log.d("Firestore", "Leaderboard set");
-                    latch.countDown();
-                    Log.d("Firestore", latch.getCount() + "");
-                }
+            FirestoreListener.getInstanceListener().leaderboardListener(true, success -> {
+                Log.d("Firestore", "Leaderboard set");
+                latch.countDown();
             });
 
         });
-
-        Log.d("Firestore", "here");
-
-
 
         executorService.execute(() -> {
             try {
                 Log.d("Firestore", "User object waiting");
                 latch.await();
                 Log.d("Firestore", "User object initialized");
-                Log.d("Firestore", "User: " + latch.getCount() + "");
                 callback.onFirestoreResult(true);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

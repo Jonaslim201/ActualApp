@@ -1,7 +1,6 @@
 package com.example.actualapp.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ public class LeaderboardFragment extends Fragment {
 
 
     public static LeaderboardFragment newInstance(String exerciseName, String category, ArrayList<FriendWorkout> leaderboardRecords){
-        Log.d("LEADERBOARD", "INITIALISING INSTANCE");
         LeaderboardFragment fragment = new LeaderboardFragment();
         args = new Bundle();
         args.putString("exerciseName", exerciseName);
@@ -64,7 +62,6 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         leaderboardView =  inflater.inflate(R.layout.leaderboard_layout, container, false);
-        Log.d("LEADERBOARD", "CREATING VIEW");
 
         Bundle args = getArguments();
         if (args != null){
@@ -91,20 +88,9 @@ public class LeaderboardFragment extends Fragment {
         recyclerViewLeaderboard.setLayoutManager(new LinearLayoutManager(leaderboardView.getContext()));
     }
 
-//    public void setView(){
-//        if(activity!=null){
-//            Toolbar toolbar = leaderboardView.findViewById(R.id.leaderboardExerciseName);;
-//            activity.setSupportActionBar(toolbar);
-//            ActionBar actionBar = activity.getSupportActionBar();
-//
-//            if(actionBar != null){
-//                actionBar.setTitle(exerciseName);
-//            }
-//        }
-//    }
 
     public void addWorkout(ArrayList<FriendWorkout> workouts) {
-        Log.d("LEADERBOARD", workouts.toString());
+
         if (leaderboardWorkouts != null){
             leaderboardWorkouts.clear();
             leaderboardWorkouts.addAll(workouts);
@@ -147,7 +133,7 @@ public class LeaderboardFragment extends Fragment {
                 return newItem.getWeightLifted() == oldItem.getWeightLifted() && newItem.getNumOfReps() == oldItem.getNumOfReps();
             }
         });
-        Log.d("LEADERBOARD", workouts.toString());
+
         leaderboardAdapter.setLeaderboard(workouts);
         diffResult.dispatchUpdatesTo(leaderboardAdapter);
         leaderboardAdapter.notifyDataSetChanged();

@@ -26,21 +26,6 @@ public class FriendFirestore extends Firestore {
                         UserFriends.newSentFriendReq(requestedFriendDocument.getReference(), id);
                         callBack.onFirestoreResult(true);
 
-//                        if (requestedFriendDocument.get("fcmToken") != null){
-//                            String token = requestedFriendDocument.get("fcmToken").toString();
-//                            Log.d("FriendFirestore", "sendFriendRequest: " + token);
-//                            Map<String, String> params = new HashMap<>();
-//                            params.put("to", token);
-//                            params.put("title", "Friend Request");
-//                            params.put("message", "You have a new friend request!");
-//
-//                            Message message = Message.builder().putAllData(params).setToken(token).build();
-//
-//                            String response = FirebaseMessaging.getInstance().send(message);
-//
-//
-//                        }
-
                     });
                 }
             } else {

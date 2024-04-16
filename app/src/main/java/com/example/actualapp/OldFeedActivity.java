@@ -22,7 +22,7 @@ import com.google.firebase.firestore.DocumentReference;
 import java.util.Map;
 import java.util.Objects;
 
-public class FeedActivity extends AppCompatActivity {
+public class OldFeedActivity extends AppCompatActivity {
 
     private TextInputEditText id;
     private Button addFriend;
@@ -54,10 +54,10 @@ public class FeedActivity extends AppCompatActivity {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success){
-                            Toast.makeText(FeedActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OldFeedActivity.this, "Success", Toast.LENGTH_SHORT).show();
                             id.setText("");
                         } else {
-                            Toast.makeText(FeedActivity.this, "Id does not exist", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OldFeedActivity.this, "Id does not exist", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -72,9 +72,9 @@ public class FeedActivity extends AppCompatActivity {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success){
-                            Toast.makeText(FeedActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OldFeedActivity.this, "Success", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(FeedActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OldFeedActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, acceptedId);
@@ -89,9 +89,9 @@ public class FeedActivity extends AppCompatActivity {
                     @Override
                     public void onFirestoreResult(boolean success) {
                         if (success){
-                            Toast.makeText(FeedActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OldFeedActivity.this, "Success", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(FeedActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OldFeedActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -133,7 +133,7 @@ public class FeedActivity extends AppCompatActivity {
                     // Username and password are the same, disable the register button
                     addFriend.setEnabled(false);
                     // Show a message
-                    Toast.makeText(FeedActivity.this, "Adding yourself", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OldFeedActivity.this, "Adding yourself", Toast.LENGTH_SHORT).show();
                 } else {
                     addFriend.setEnabled(isValid);
                 }

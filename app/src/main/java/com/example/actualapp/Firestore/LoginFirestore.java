@@ -24,7 +24,7 @@ public class LoginFirestore extends Firestore{
                 String actualPw = String.valueOf(userDocument.getFoundDocument().get("password"));
                 String inputPw = String.valueOf(user.get("password"));
                 if (inputPw.equals(actualPw)) {
-                    initializeUserObject(activity, user, false, callback);
+                    initializeUserObject(user, false, callback);
                 } else {
                     displayToast(activity, "Wrong password.", callback);
                 }
