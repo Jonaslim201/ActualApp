@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Workout;
+import com.example.actualapp.exerciseRelated.WorkoutKey;
 import com.example.actualapp.recyclerAdapters.workoutListAdapter;
+import com.example.actualapp.userRelated.UserExercise;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
@@ -172,7 +174,7 @@ public class WorkoutFragment extends Fragment {
         graphView.getViewport().setMaxX(newDataPoint.getX());
     }
 
-    public void addWorkout(Workout workout) {
+    public void addWorkout(Workout workout, WorkoutKey key) {
 
         if (getActivity() != null){
             getActivity().runOnUiThread(new Runnable() {
@@ -181,12 +183,13 @@ public class WorkoutFragment extends Fragment {
                     if (workoutRecords == null) {
                         workoutRecords = new ArrayList<>();
                     }
-                    workoutRecords.add(workout);
+
+                    workoutRecords = UserExercise.getWorkouts(key);
 
                     if (mAdapter == null) {
                         recordsListInit();
                     } else {
-                        mAdapter.notifyItemInserted(workoutRecords.size() - 1);
+                        mAdapter.notifyItemInserted(workoutRecords.size());
                     }
 
                     if (graphView == null){

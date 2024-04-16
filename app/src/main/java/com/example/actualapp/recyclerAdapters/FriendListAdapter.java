@@ -29,10 +29,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     // ViewHolder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView usernameTextView;
+        TextView idTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
+            idTextView = itemView.findViewById(R.id.userIdTextView);
         }
     }
 
@@ -47,7 +49,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Friend friend = friendList.get(position);
+
+        String userID = "User ID: " + friend.getId();
         holder.usernameTextView.setText(friend.getUsername());
+        holder.idTextView.setText(userID);
+
+        holder.usernameTextView.setTextColor(holder.usernameTextView.getResources().getColor(R.color.matteWhite));
+        holder.idTextView.setTextColor(holder.idTextView.getResources().getColor(R.color.matteWhite));
     }
 
     @Override

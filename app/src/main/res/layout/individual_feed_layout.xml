@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/feedCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7sp"
+        android:layout_marginEnd="7sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp"
+        android:backgroundTint="@color/blackCard"
+        android:minHeight="135sp"
+        android:clickable="true"
+        app:cardElevation="50sp"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingClass">
+
+        <TextView
+            android:id="@+id/feedUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="top|start"
+            android:text="Username"
+            android:textAlignment="gravity"
+            android:textColor="@color/orange"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginEnd="10sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/feedExercisename"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="start"
+            android:text="Exercise Name"
+            android:textAlignment="gravity"
+            android:textColor="@color/orange"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="35sp"
+            android:layout_marginEnd="10sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toBottomOf="@id/feedUsername"/>
+
+        <TextView
+            android:id="@+id/feedWeightLifted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="70sp"
+            android:layout_marginEnd="10sp"
+            android:text="Weight Lifted: "
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/feedNumOfReps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="93sp"
+            android:layout_marginEnd="10sp"
+            android:textSize="13sp"
+            android:text="Number of Reps:"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+        <TextView
+            android:id="@+id/feedDateOfWorkout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="130sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="15sp"
+            android:text="Date"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/feedLikeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="170sp"
+            android:layout_marginTop="126sp"
+            android:layout_marginEnd="10sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/baseline_favorite_border_24"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintStart_toEndOf="@id/feedDateOfWorkout"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/feedShareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="200sp"
+            android:layout_marginTop="126sp"
+            android:layout_marginEnd="10sp"
+            android:textSize="13sp"
+            android:src="@drawable/baseline_share_24"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toEndOf="@id/feedDateOfWorkout"
+            app:layout_constraintEnd_toStartOf="@id/exercisePic"
+            app:layout_constraintTop_toTopOf="parent">
+        </ImageView>
+
+
+        <ImageView
+            android:id="@+id/exercisePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:gravity="center|end"
+            android:layout_gravity="center|end"
+            android:maxWidth="100sp"
+            android:maxHeight="100sp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/inclinebenchsitup"
+            android:layout_marginEnd="15sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="5sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

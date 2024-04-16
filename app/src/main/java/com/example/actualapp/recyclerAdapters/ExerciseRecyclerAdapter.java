@@ -37,14 +37,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         this.category = category;
     }
 
-    public void setExercises(ArrayList<Exercise> exercises){
-        this.exercises = exercises;
-    }
-
-    public ArrayList<Exercise> getExercises() {
-        return exercises;
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -1,49 +1,100 @@
 package com.example.actualapp.userRelated;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.actualapp.FeedActivity;
 import com.example.actualapp.Firestore.FirestoreCallBack;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class UserFriends extends User {
     private static Map<String, DocumentSnapshot> friendDocuments;
     private static ArrayList<Friend> friend;
     private static Map<String, DocumentReference> receivedFriendRequests;
     private static ArrayList<Friend> receivedFriendRequestsList;
-
     private static Map<String, DocumentReference> sentFriendRequests;
     private static String fcmToken;
 
-    public static void setFriendDocuments(ArrayList<DocumentReference> friends){
+    public static void initializeFriendDocuments(){
+        friend = new ArrayList<>();
+    }
+
+
+    public static void setFriendDocuments(ArrayList<DocumentReference> friends, FirestoreCallBack callBack){
         if (UserFriends.friendDocuments == null){
             UserFriends.friendDocuments = new HashMap<>();
         }
-        for (DocumentReference friendDoc:friends){
-            friendDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    if (documentSnapshot.exists()){
-                        String id = documentSnapshot.get("id").toString();
-                        UserFriends.friendDocuments.put(id, documentSnapshot);
+
+        CountDownLatch internalLatch = new CountDownLatch(friends.size());
+
+        if (friends.size() > UserFriends.friend.size()){
+            for (DocumentReference friendDoc:friends){
+                Log.d("UserFriends", "setFriendDocuments: " + friendDoc.getId());
+                friendDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.d("UserFriends", "setFriendDocuments: " + documentSnapshot.exists());
+                        if (documentSnapshot.exists()){
+                            String id = documentSnapshot.get("id").toString();
+                            UserFriends.friendDocuments.put(id, documentSnapshot);
+                            Friend friend = new Friend.FriendBuilder().setId(id)
+                                    .setUsername(documentSnapshot.get("username").toString()).Build();
+                            Log.d("UserFriends", "ADDING FRIEND setFriendDocuments: " + friend.getUsername() + " " + friend.getId());
+                            UserFriends.friend.add(friend);
+                        }
+
+                        internalLatch.countDown();
+
+                        if (internalLatch.getCount() == 0){
+                            callBack.onFirestoreResult(true);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
-    public static void addFriend(DocumentReference newFriend){
+    public static void addFriend(DocumentReference newFriend, FirestoreCallBack callBack){
+        Log.d("UserFriends", "addFriend: " + newFriend.getId());
+        Log.d("UserFriends", "addFriend: " + friendDocuments.keySet());
+        if (friendDocuments == null){
+            friendDocuments = new HashMap<>();
+        }
+
+        CountDownLatch internalLatch = new CountDownLatch(1);
+
         newFriend.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()){
                     String id = documentSnapshot.get("id").toString();
                     UserFriends.friendDocuments.put(id, documentSnapshot);
+                    Friend newFriend = new Friend(documentSnapshot.get("username").toString(), id);
+                    Log.d("UserFriends", "ADDING addFriend: " + newFriend.getUsername() + " " + newFriend.getId());
+                    UserFriends.friend.add(newFriend);
+                    for (Friend friend: UserFriends.friend){
+                        Log.d("UserFriends", "addFriend: " + friend.getUsername());
+                    }
+                    internalLatch.countDown();
                 }
+
+                try{
+                    internalLatch.await();
+                } catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+                callBack.onFirestoreResult(true);
             }
         });
     }
@@ -53,34 +104,17 @@ public class UserFriends extends User {
     }
 
     public static ArrayList<Friend> getFriend() {
-        return new ArrayList<>();
+        if (friend == null || friend.isEmpty()){
+            return new ArrayList<>();
+        } else {
+            return friend;
+        }
     }
 
-
-//    public static void addFriend(DocumentReference newFriend){
-//        Log.d("Friend", "add Friend getting called");
-//        if (friend == null){
-//            friend = new ArrayList<>();
-//        }
-//
-//        newFriend.get().addOnSuccessListener(documentSnapshot -> {
-//            if (documentSnapshot.exists()){
-//                String newFriendId = documentSnapshot.get("id").toString();
-//                boolean isFriendExists = friend.stream().anyMatch(f -> f.getId().equals(newFriendId));
-//                if (!isFriendExists){
-//                    Friend newFriendObj = new Friend.FriendBuilder().setId(documentSnapshot.get("id").toString())
-//                                                                    .setUsername(documentSnapshot.get("username").toString()).Build();
-//                    Log.d("Friend", "addFriend: " + documentSnapshot.get("username").toString());
-//                    friend.add(newFriendObj);
-//                    String id = documentSnapshot.get("id").toString();
-//                    UserFriends.friendDocuments.put(id, documentSnapshot);
-//                }
-//                Log.d("Friend", "addFriends: " + friend.size());
-//            }
-//        });
-//    }
-
     public static Map<String, DocumentSnapshot> getFriendDocuments() {
+        if (friendDocuments == null) {
+            friendDocuments = new HashMap<>();
+        }
         return friendDocuments;
     }
 
@@ -94,38 +128,49 @@ public class UserFriends extends User {
 
     //Received Keys are the usernames of the people who sent the request
     public static void setReceivedFriendRequests(ArrayList<DocumentReference> receivedFriendRequests, FirestoreCallBack callBack) {
+        Log.d("UserFriends", "setReceivedFriendRequests");
         UserFriends.receivedFriendRequests = new HashMap<>();
         UserFriends.receivedFriendRequestsList = new ArrayList<>();
 
+        CountDownLatch internalLatch = new CountDownLatch(receivedFriendRequests.size());
+
+
         for (DocumentReference friendDoc: receivedFriendRequests){
             UserFriends.receivedFriendRequests.put(friendDoc.getId(), friendDoc);
+            Log.d("UserFriendsMapping", "setReceivedFriendRequests: " + friendDoc.getId());
+            friendDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot.exists()){
+                            String id = documentSnapshot.get("id").toString();
+                            Friend friend = new Friend.FriendBuilder().setId(id)
+                                                                    .setUsername(documentSnapshot.get("username").toString()).Build();
+                            Log.d("UserFriends", "setReceivedFriendRequests: " + friend.getUsername() + " " + friend.getId());
+                            UserFriends.receivedFriendRequestsList.add(friend);
+                        }
+                    }
+
+                    internalLatch.countDown();
+                    if (internalLatch.getCount() == 0) {
+                        callBack.onFirestoreResult(true);
+                    }
+                }
+            });
         }
-        setReceivedFriendRequestsList(callBack);
         FeedActivity.updateFriendRequest();
     }
 
-    public static void setReceivedFriendRequestsList(FirestoreCallBack callBack) {
-        if (!UserFriends.receivedFriendRequests.isEmpty()){
-            for (Map.Entry<String, DocumentReference> entry: UserFriends.receivedFriendRequests.entrySet()){
-                entry.getValue().get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()){
-                        String id = documentSnapshot.get("id").toString();
-                        Friend friend = new Friend.FriendBuilder().setId(id)
-                                                                .setUsername(documentSnapshot.get("username").toString()).Build();
-                        UserFriends.receivedFriendRequestsList.add(friend);
-                    }
-                });
-            }
-        }
-        callBack.onFirestoreResult(true);
-    }
-
-    public static void deleteFriendRequest(DocumentReference receivedFriendRequest){
+    public static void deleteFriendRequest(DocumentReference receivedFriendRequest, FirestoreCallBack callBack){
         if (UserFriends.receivedFriendRequests != null && receivedFriendRequest != null){
             String idToDelete = receivedFriendRequest.getId();
             UserFriends.receivedFriendRequests.remove(idToDelete);
-
-            UserFriends.receivedFriendRequestsList.removeIf(friend -> friend.getId().equals(idToDelete));
+            Log.d("UserFriends", "deleteFriendRequest: " + idToDelete);
+            Log.d("UserFriends", "deleteFriendRequest: " + UserFriends.receivedFriendRequestsList.size());
+            UserFriends.receivedFriendRequestsList.removeIf(friend -> friend.getUsername().equals(idToDelete));
+            Log.d("UserFriends", "deleteFriendRequest: " + UserFriends.receivedFriendRequestsList.size());
+            callBack.onFirestoreResult(true);
         }
     }
 
@@ -144,6 +189,10 @@ public class UserFriends extends User {
                 }
             });
         }
+    }
+
+    public static void newSentFriendReq(DocumentReference friendDoc, String id){
+        sentFriendRequests.put(id, friendDoc);
     }
 
     public static Map<String, DocumentReference> getSentFriendRequests() {

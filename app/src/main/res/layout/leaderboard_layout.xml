@@ -13,15 +13,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/leaderboardExerciseName"
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:background="@color/material_dynamic_primary80"
-            app:title="Bench Press"
-            app:titleMargin="3dp"/>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +22,6 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@color/black"
                 android:src="@drawable/baseline_person_24"/>
 
             <TextView
@@ -39,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:text="Leaderboard"
                 android:textSize="30dp"
-                android:textColor="@color/black"
                 android:layout_gravity="center_horizontal"
                 android:textStyle="bold"
                 android:paddingBottom="10dp"/>

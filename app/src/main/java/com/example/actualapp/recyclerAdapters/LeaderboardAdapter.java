@@ -55,6 +55,10 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         Log.d("leaderboardAdapter", details);
         holder.textDetails.setText(details);
 
+        holder.textRank.setTextColor(mInflater.getContext().getResources().getColor(R.color.black));
+        holder.textUsername.setTextColor(mInflater.getContext().getResources().getColor(R.color.black));
+        holder.textDetails.setTextColor(mInflater.getContext().getResources().getColor(R.color.black));
+
         if (position == 0) {
             holder.itemView.setBackgroundResource(R.color.firstPlace);
         } else if (position == 1) {

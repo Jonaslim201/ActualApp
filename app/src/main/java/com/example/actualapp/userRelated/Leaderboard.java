@@ -2,6 +2,7 @@ package com.example.actualapp.userRelated;
 
 import android.util.Log;
 
+import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.exerciseRelated.FriendWorkout;
 import com.example.actualapp.exerciseRelated.WorkoutKey;
 import com.google.firebase.firestore.CollectionReference;
@@ -12,11 +13,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 public class Leaderboard {
 
     private static CollectionReference leaderboardCollection;
-    private static HashMap<WorkoutKey, ArrayList<FriendWorkout>> friendWorkoutMap;
+    public static HashMap<WorkoutKey, ArrayList<FriendWorkout>> friendWorkoutMap;
     private static HashMap<String, DocumentSnapshot> leaderboardDocumentSnapshots;
     public static CollectionReference getLeaderboardCollection() {
         return leaderboardCollection;
@@ -28,10 +30,6 @@ public class Leaderboard {
 
 
     public static ArrayList<FriendWorkout> getLeaderboard(WorkoutKey key){
-        Log.d("Leaderboard", "getting leaderboard");
-        Log.d("Leaderboard", key.toString());
-        Log.d("Leaderboard", friendWorkoutMap.toString());
-
         if (!friendWorkoutMap.containsKey(key)) {
             Log.d("Leaderboard", "null");
             return null;
@@ -57,15 +55,22 @@ public class Leaderboard {
     }
 
 
-    public static void updateLeaderboard(String category, String exerciseName, Map<String, Object> newRecord) {
+    public static void updateLeaderboard(String category, String exerciseName, Map<String, Object> newRecord, FirestoreCallBack callBack) {
         WorkoutKey key = new WorkoutKey(category, exerciseName);
         friendWorkoutMap.put(key, new ArrayList<>());
+
+        CountDownLatch internalLatch = new CountDownLatch(newRecord.size());
 
         for (Object value : newRecord.values()) {
             Log.d("Leaderboard", value.toString());
             if (value instanceof Map) {
                 FriendWorkout friendWorkout = new FriendWorkout((Map<String, Object>) value);
                 Objects.requireNonNull(friendWorkoutMap.get(key)).add(friendWorkout);
+            }
+
+            internalLatch.countDown();
+            if (internalLatch.getCount() == 0) {
+                callBack.onFirestoreResult(true);
             }
         }
     }

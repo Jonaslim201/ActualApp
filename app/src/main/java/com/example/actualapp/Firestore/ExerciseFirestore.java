@@ -16,6 +16,7 @@ import com.example.actualapp.userRelated.UserFriends;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,13 +105,14 @@ public class ExerciseFirestore extends Firestore{
                     if (workout.getWeightLifted() > highScoreWeight ||
                             (workout.getWeightLifted() == highScoreWeight && workout.getNumOfReps() > highScoreReps)) {
                         existingWorkouts.add(0, workout);
+                        addToLeaderboard(category, workout);
                     } else {
                         existingWorkouts.add(workout);
                     }
 
                     UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), existingWorkouts).addOnSuccessListener(unused -> {
                                 callBack.onFirestoreResult(true);
-                                addToLeaderboard(category, workout);
+                                addToFeed(workout);
                             }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
 
                 } else {
@@ -118,9 +120,8 @@ public class ExerciseFirestore extends Firestore{
                     UserExercise.getWorkoutsDoc().document(category).update(workout.getName(), toAddWorkouts).addOnSuccessListener(unused -> {
                         addToLeaderboard(category, workout);
                         callBack.onFirestoreResult(true);
+                        addToFeed(workout);
                     }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
-
-
                 }
             } else {
                 Log.d("ExerciseFirestore", "Failed to get document.");
@@ -129,12 +130,20 @@ public class ExerciseFirestore extends Firestore{
 
     }
 
+    public static void addToFeed(Workout workout){
+        FriendWorkout newWorkout = new FriendWorkout(workout, User.getId(), User.getUsername(), R.drawable.baseline_person_24);
+        Log.d("ExerciseFirestore", newWorkout.getCategory());
+        for (Map.Entry<String, DocumentSnapshot> friends:UserFriends.getFriendDocuments().entrySet()){
+            friends.getValue().getReference().collection("feed").document("feed").update("actualFeed", FieldValue.arrayUnion(newWorkout));
+        }
+    }
+
     //Adds the new workout to the leaderboard
     public static void addToLeaderboard(String category, Workout workout){
 
         String fieldpath = workout.getName() + "." + User.getUsername();
         FriendWorkout newPR = new FriendWorkout(workout, User.getId(), User.getUsername(), R.drawable.baseline_person_24);
-
+        Log.d("ExerciseFirestore", newPR.getCategory());
         Leaderboard.getLeaderboardCollection().document(category).update(fieldpath, newPR);
         for (Map.Entry<String, DocumentSnapshot> friends:UserFriends.getFriendDocuments().entrySet()){
             friends.getValue().getReference().collection("leaderboards").document(category).update(fieldpath, newPR);

@@ -3,139 +3,125 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginLeft="10dp"
-        android:text="Pick your"
-        android:textColor="@color/Purple"
-        android:textSize="20sp"
-        android:fontFamily="@font/poppins_regular"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textView"
-        style="@style/headerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="40sp"
-        android:text="Category"
-        android:textSize="45sp"
-        android:textColor="@color/Purple"
-        android:fontFamily="@font/poppins_regular"
-        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Pick your"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/appCompatTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:layout_marginLeft="10dp"
-        android:text="Make muscles, not excuses"
-        android:fontFamily="@font/poppins_regular"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/categoryGrid"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textView"
+            style="@style/headerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Category"
+            android:textSize="40sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/appCompatTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="Make muscles, not excuses"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <GridLayout
         android:id="@+id/categoryGrid"
-        android:layout_width="match_parent"
+        android:layout_width="335dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layoutMarginTopCategories"
-        android:layout_marginStart="10sp"
-        android:layout_marginEnd="10sp"
-        android:layout_gravity="center_horizontal"
         android:columnCount="3"
+        android:paddingTop="@dimen/layoutMarginTopCategories"
         android:rowCount="3"
         android:useDefaultMargins="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearlayout">>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewAbs"
             style="@style/exercisesCardView"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/abs"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/abs" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewAbsText"
                 style="@style/exerciseCategoryText"
-                android:text="Abs"
                 android:padding="5dp"
+                android:text="Abs"
                 android:textColor="@color/white"
-                android:textSize="22dp"
-                />
+                android:textSize="20dp" />
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewBack"
             style="@style/exercisesCardView"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/back"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/back" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewBackText"
                 style="@style/exerciseCategoryText"
-                android:text="Back"
                 android:padding="5dp"
+                android:text="Back"
                 android:textColor="@color/white"
-                android:textSize="22dp"/>
+                android:textSize="20dp" />
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewBiceps"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
             app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/biceps"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/biceps" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewBicepsText"
                 style="@style/exerciseCategoryText"
-                android:text="Biceps"
                 android:padding="5dp"
+                android:text="Biceps"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="20dp" />
 
 
         </androidx.cardview.widget.CardView>
@@ -143,24 +129,24 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewCalf"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="30dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
+            app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/calf"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/calf" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewCalfText"
                 style="@style/exerciseCategoryText"
-                android:text="Calf"
                 android:padding="5dp"
+                android:text="Calf"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="20dp" />
 
 
         </androidx.cardview.widget.CardView>
@@ -168,24 +154,24 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewChest"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="30dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
+            app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/chest"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/chest" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewChestText"
                 style="@style/exerciseCategoryText"
-                android:text="Chest"
                 android:padding="5dp"
+                android:text="Chest"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="20dp" />
 
 
         </androidx.cardview.widget.CardView>
@@ -193,24 +179,24 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewForearms"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="30dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
+            app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/forearms"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/forearms" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewForearmsText"
                 style="@style/exerciseCategoryText"
-                android:text="Forearms"
                 android:padding="5dp"
+                android:text="Forearms"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="20dp" />
 
 
         </androidx.cardview.widget.CardView>
@@ -218,24 +204,24 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewLegs"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="30dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
+            app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/legs"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/legs" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewLegsText"
                 style="@style/exerciseCategoryText"
-                android:text="Legs"
                 android:padding="5dp"
+                android:text="Legs"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="20dp" />
 
 
         </androidx.cardview.widget.CardView>
@@ -243,24 +229,24 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewShoulders"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="30dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
+            app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/shoulders"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/shoulders" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewShouldersText"
                 style="@style/exerciseCategoryText"
-                android:text="Shoulders"
                 android:padding="5dp"
+                android:text="Shoulders"
                 android:textColor="@color/white"
-                android:textSize="22dp"/>
+                android:textSize="20dp" />
 
 
         </androidx.cardview.widget.CardView>
@@ -268,28 +254,27 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewTriceps"
             style="@style/exercisesCardView"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="30dp"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
+            app:cardCornerRadius="30dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/triceps"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                android:src="@drawable/triceps" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/cardViewTricepsText"
                 style="@style/exerciseCategoryText"
-                android:text="Triceps"
                 android:padding="5dp"
+                android:text="Triceps"
                 android:textColor="@color/white"
-                android:textSize="22dp" />
+                android:textSize="20dp" />
 
         </androidx.cardview.widget.CardView>
 
     </GridLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

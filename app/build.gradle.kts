@@ -39,6 +39,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packagingOptions {
+        exclude("google/firestore/v1/query.proto")
+    }
 }
 
 dependencies {
@@ -51,6 +55,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")
+    implementation("com.google.firebase:firebase-admin:9.2.0")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:2.9.9")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     testImplementation("junit:junit:4.13.2")

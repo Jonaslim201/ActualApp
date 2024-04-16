@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:theme="@style/Theme.RigidBodyApp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/exerciseCardView"
@@ -29,10 +30,9 @@
             android:layout_height="fill_parent"
             android:gravity="top|start"
             android:text="Exercise Name"
-            android:textAlignment="gravity"
-            android:textColor="@color/orange"
             android:textSize="17sp"
             android:textStyle="bold"
+            android:textColor="@color/orange"
             android:layout_marginStart="15sp"
             android:layout_marginTop="15sp"
             android:layout_marginEnd="10sp"
@@ -47,8 +47,8 @@
             android:layout_marginStart="15sp"
             android:layout_marginTop="57sp"
             android:layout_marginEnd="10sp"
+            android:textColor="@color/matteWhite"
             android:text="Primary Muscle Groups: "
-            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/exercisePic"
@@ -62,9 +62,9 @@
             android:layout_marginStart="15sp"
             android:layout_marginTop="78sp"
             android:layout_marginEnd="10sp"
+            android:textColor="@color/matteWhite"
             android:textSize="13sp"
             android:text="Muscle groups here"
-            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/exercisePic"
             app:layout_constraintTop_toTopOf="parent">

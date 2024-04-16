@@ -1,5 +1,7 @@
 package com.example.actualapp.Firestore;
 
+import android.util.Log;
+
 import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserFriends;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,7 +23,24 @@ public class FriendFirestore extends Firestore {
                     requestedFriendDocument.getReference().update("friendRequests.received", FieldValue.arrayUnion(User.getUserDoc()))
                             .addOnSuccessListener(unused -> {
                         User.getUserDoc().update("friendRequests.sent", FieldValue.arrayUnion(requestedFriendDocument.getReference()));
+                        UserFriends.newSentFriendReq(requestedFriendDocument.getReference(), id);
                         callBack.onFirestoreResult(true);
+
+//                        if (requestedFriendDocument.get("fcmToken") != null){
+//                            String token = requestedFriendDocument.get("fcmToken").toString();
+//                            Log.d("FriendFirestore", "sendFriendRequest: " + token);
+//                            Map<String, String> params = new HashMap<>();
+//                            params.put("to", token);
+//                            params.put("title", "Friend Request");
+//                            params.put("message", "You have a new friend request!");
+//
+//                            Message message = Message.builder().putAllData(params).setToken(token).build();
+//
+//                            String response = FirebaseMessaging.getInstance().send(message);
+//
+//
+//                        }
+
                     });
                 }
             } else {
@@ -32,21 +51,20 @@ public class FriendFirestore extends Firestore {
 
     //Accepts the friend request from the user with the given id
     public static void acceptFriendRequest(DocumentReference acceptedFriendDoc, FirestoreCallBack callBack, String acceptedId){
+        Log.d("FriendFirestore", "acceptFriendRequest:" + acceptedFriendDoc.getId() + " " + acceptedId);
         if (acceptedFriendDoc != null){
             User.getUserDoc().update("friends", FieldValue.arrayUnion(acceptedFriendDoc)).addOnSuccessListener(unused -> {
                 addSelfInFriend(acceptedFriendDoc, callBack);
                 ExerciseFirestore.addedFriendLeaderboard(acceptedFriendDoc, acceptedId);
-                UserFriends.addFriend(acceptedFriendDoc);
+                callBack.onFirestoreResult(true);
             }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
-
-            UserFriends.deleteFriendRequest(acceptedFriendDoc);
         }
     }
 
     //Adds the current user to the friend list of the new friend
     public static void addSelfInFriend(DocumentReference acceptedFriendDoc, FirestoreCallBack callBack){
         if (acceptedFriendDoc != null){
-            acceptedFriendDoc.update("friends", FieldValue.arrayUnion(User.getUserDoc())).addOnSuccessListener(unused -> removeFriendRequest(acceptedFriendDoc, callBack))
+            acceptedFriendDoc.update("friends", FieldValue.arrayUnion(User.getUserDoc())).addOnSuccessListener(unused -> Log.d("FriendFirestore", "addSelfInFriend: " + "Success"))
                     .addOnFailureListener(e -> callBack.onFirestoreResult(false));
         }
     }
@@ -58,8 +76,6 @@ public class FriendFirestore extends Firestore {
                 rejectedFriendDoc.update("friendRequests.sent", FieldValue.arrayRemove(User.getUserDoc()));
                 callBack.onFirestoreResult(true);
             }).addOnFailureListener(e -> callBack.onFirestoreResult(false));
-
-            UserFriends.deleteFriendRequest(rejectedFriendDoc);
         }
     }
 

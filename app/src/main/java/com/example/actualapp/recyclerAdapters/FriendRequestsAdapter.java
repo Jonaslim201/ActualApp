@@ -38,6 +38,10 @@ public class FriendRequestsAdapter extends RecyclerView.Adapter<FriendRequestsAd
         }
     }
 
+    public void setFriendRequests(ArrayList<Friend> friendRequests) {
+        this.friendRequests = friendRequests;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

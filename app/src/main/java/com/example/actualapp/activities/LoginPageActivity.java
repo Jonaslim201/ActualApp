@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,7 +18,6 @@ import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.Firestore.LoginFirestore;
 import com.example.actualapp.MainActivity;
 import com.example.actualapp.R;
-import com.example.actualapp.RigidBodyApp;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -78,6 +78,7 @@ public class LoginPageActivity extends AppCompatActivity{
 
                 if (success){
                     //If user inputs the correct credentials, enters the app.
+                    Log.d("LoginPageActivity", "Login successful");
                     startApp();
                 } else {
                     //If user inputs the wrong credentials cuz hes a dumbass then it reverts the button animation
@@ -89,7 +90,6 @@ public class LoginPageActivity extends AppCompatActivity{
 
     //Starts the app
     public void startApp(){
-        RigidBodyApp.startListeners();
         startActivity(new Intent(this, MainActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
     }

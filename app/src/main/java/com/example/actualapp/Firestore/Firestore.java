@@ -3,11 +3,11 @@ package com.example.actualapp.Firestore;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.actualapp.exerciseRelated.FriendWorkout;
 import com.example.actualapp.exerciseRelated.Workout;
 import com.example.actualapp.exerciseRelated.WorkoutKey;
+import com.example.actualapp.fragments.HomeFragment;
 import com.example.actualapp.userRelated.Leaderboard;
 import com.example.actualapp.userRelated.User;
 import com.example.actualapp.userRelated.UserExercise;
@@ -45,7 +45,7 @@ public class Firestore implements FirestoreCallBack {
     }
 
     //Initializes Firestore
-    static void initializeDatabase(Context activity){
+    static void initializeDatabase(Context activity) {
         FirebaseApp.initializeApp(activity);
         db = FirebaseFirestore.getInstance();
     }
@@ -55,76 +55,127 @@ public class Firestore implements FirestoreCallBack {
     static void initializeUserObject(Context activity, Map<String, Object> user, Boolean registering, FirestoreCallBack callback){
         //Getting reference to the user document
         DocumentReference userDoc = userDocument.getFoundDocument().getReference();
-        CountDownLatch latch = new CountDownLatch(4);
+        CountDownLatch latch = new CountDownLatch(6);
+        Log.d("Firestore", latch.getCount() + "");
 
         //1. Creating the User object
-        executorService.execute(() -> {
-            if (registering){
-                new User.UserBuilder().setUsername(user.get("username").toString())
-                        .setPassword(user.get("password").toString())
-                        .setEmail(user.get("email").toString())
-                        .setId(user.get("id").toString())
-                        .setUserDoc(userDoc).build();
-            } else {
-                new User.UserBuilder().setUsername(user.get("username").toString())
-                        .setPassword(user.get("password").toString())
-                        .setEmail((String) userDocument.getFoundDocument().get("email"))
-                        .setId((String) userDocument.getFoundDocument().get("id"))
-                        .setUserDoc(userDoc).build();
-            }
+        if (registering){
+            new User.UserBuilder().setUsername(user.get("username").toString())
+                    .setPassword(user.get("password").toString())
+                    .setEmail(user.get("email").toString())
+                    .setId(user.get("id").toString())
+                    .setUserDoc(userDoc).build();
+        } else {
+            new User.UserBuilder().setUsername(user.get("username").toString())
+                    .setPassword(user.get("password").toString())
+                    .setEmail((String) userDocument.getFoundDocument().get("email"))
+                    .setId((String) userDocument.getFoundDocument().get("id"))
+                    .setUserDoc(userDoc).build();
+        }
 
-            latch.countDown();
+//        executorService.execute(() -> {
+//            AccessToken accessToken = new AccessToken();
+//            final String token = accessToken.getAccessToken();
+//            Log.d("Firestore", "Token: " + token);
+//        });
+
+
+        executorService.execute(() -> {
+            HomeFragment.initializeFriendWorkouts();
+            FirestoreListener.getInstanceListener().feedListener(true, new FirestoreCallBack() {
+                @Override
+                public void onFirestoreResult(boolean success) {
+                    Log.d("Firestore", "Feed set");
+                    latch.countDown();
+                }
+            });
         });
 
 
         //2. Getting friend list and friend requests
         executorService.execute(() -> {
-            if (registering){
-                userDoc.update("friends", Collections.emptyList());
+            ExecutorService innerExecutorService  = Executors.newFixedThreadPool(1);
 
-                Map<String, Object> newFriendsReqMap = new HashMap<>();
-                newFriendsReqMap.put("sent", Collections.emptyList());
-                newFriendsReqMap.put("received", Collections.emptyList());
+            innerExecutorService.execute(() -> {
+                if (registering){
+                    userDoc.update("friends", Collections.emptyList());
 
-                userDoc.update("friendRequests", newFriendsReqMap);
-            } else {
-                ArrayList<DocumentReference> friendsList = (ArrayList<DocumentReference>) userDocument.getFoundDocument().get("friends");
-                Map<String, Object> friendsRequests = (Map<String, Object>) userDocument.getFoundDocument().get("friendRequests");
-                Log.d("Firestore", userDoc.getPath());
-                Log.d("Firestore", "friendsList: " + friendsList);
-                if (friendsList != null && !friendsList.isEmpty()){
-                    UserFriends.setFriendDocuments(friendsList);
+                    Map<String, Object> newFriendsReqMap = new HashMap<>();
+                    newFriendsReqMap.put("sent", Collections.emptyList());
+                    newFriendsReqMap.put("received", Collections.emptyList());
+
+                    db.runTransaction(transaction -> {
+                        transaction.set(userDoc.collection("feed").document("feed"), new HashMap());
+                        transaction.update(userDoc.collection("feed").document("feed"), "actualFeed", Collections.emptyList());
+                        return null;
+                    }).addOnSuccessListener(aVoid -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
+                            .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+
+                    userDoc.update("friendRequests", newFriendsReqMap);
                 } else {
-                    UserFriends.setFriendDocuments(new ArrayList<>());
+                    ArrayList<DocumentReference> friendsList = (ArrayList<DocumentReference>) userDocument.getFoundDocument().get("friends");
+                    Map<String, Object> friendsRequests = (Map<String, Object>) userDocument.getFoundDocument().get("friendRequests");
+                    Log.d("Firestore", userDoc.getPath());
+                    Log.d("Firestore", "friendsList: " + friendsList);
+
+                    if (friendsRequests != null && !friendsRequests.isEmpty()){
+                        ArrayList<DocumentReference> sentRequests = (ArrayList<DocumentReference>) friendsRequests.get("sent");
+
+//                    if (receivedRequests == null || receivedRequests.isEmpty()){
+//                        receivedRequests = new ArrayList<>();
+//                        UserFriends.setReceivedFriendRequests(new ArrayList<>(), new FirestoreCallBack() {
+//                            @Override
+//                            public void onFirestoreResult(boolean success) {
+//                                Log.d("Firestore", "Received friend requests set");
+//                            }
+//                        });
+//                    } else {
+//                        UserFriends.setReceivedFriendRequests(receivedRequests, new FirestoreCallBack() {
+//                            @Override
+//                            public void onFirestoreResult(boolean success) {
+//                                Log.d("Firestore", "Received friend requests set");
+//                            }
+//                        });
+//                    }
+
+                        if (sentRequests == null || sentRequests.isEmpty()){
+                            UserFriends.setSentFriendRequests(new ArrayList<>());
+                        } else {
+                            UserFriends.setSentFriendRequests(sentRequests);
+                        }
+                    }
                 }
 
-                if (friendsRequests != null && !friendsRequests.isEmpty()){
-                    ArrayList<DocumentReference> receivedRequests = (ArrayList<DocumentReference>) friendsRequests.get("received");
-                    ArrayList<DocumentReference> sentRequests = (ArrayList<DocumentReference>) friendsRequests.get("sent");
+                UserFriends.initializeFriendDocuments();
 
-                    if (receivedRequests == null || receivedRequests.isEmpty()){
-                        receivedRequests = new ArrayList<>();
-                    } else {
-                        UserFriends.setReceivedFriendRequests(receivedRequests, new FirestoreCallBack() {
-                            @Override
-                            public void onFirestoreResult(boolean success) {
-                                Log.d("Firestore", "Received friend requests set");
-                            }
-                        });
+                latch.countDown();
+            });
+
+            innerExecutorService.execute(() -> {
+                FirestoreListener.getInstanceListener().friendReqListener(true, new FirestoreCallBack() {
+                    @Override
+                    public void onFirestoreResult(boolean success) {
+                        Log.d("Firestore", "Friend requests set");
+                        Log.d("Firestore", latch.getCount() + "");
+                        latch.countDown();
                     }
+                });
+            });
 
-                    if (sentRequests == null || sentRequests.isEmpty()){
-                        sentRequests = new ArrayList<>();
-                    } else {
-                        UserFriends.setSentFriendRequests(sentRequests);
+            innerExecutorService.execute(() -> {
+                FirestoreListener.getInstanceListener().friendsListener(true, new FirestoreCallBack() {
+                    @Override
+                    public void onFirestoreResult(boolean success) {
+                        Log.d("Firestore", "Friends set");
+                        Log.d("Firestore", latch.getCount() + "");
+                        latch.countDown();
                     }
+                });
+            });
 
-                    Log.d("Firestore", receivedRequests.toString());
+            innerExecutorService.shutdown();
 
-                }
-            }
-
-            latch.countDown();
+            Log.d("Firestore", latch.getCount() + "");
         });
 
         // 3. Getting workout collection
@@ -133,12 +184,15 @@ public class Firestore implements FirestoreCallBack {
             userDoc.collection("workouts").get().addOnSuccessListener(queryDocumentSnapshots -> {
                 if (queryDocumentSnapshots.isEmpty()){
                     createFirestoreDocuments(userDoc.collection("workouts"));
+                    UserExercise.setWorkoutMap(new HashMap<>());
                 } else {
                     getFirestoreDocuments(queryDocumentSnapshots, "workouts");
                 }
-            }).addOnCompleteListener(task -> UserExercise.setWorkoutsDoc(userDoc.collection("workouts")));
+            }).addOnCompleteListener(task -> Log.d("Firestore", "Workout collection set"));
+            UserExercise.setWorkoutsDoc(userDoc.collection("workouts"));
 
             latch.countDown();
+
         });
 
         //4. Getting leaderboard collection
@@ -147,22 +201,41 @@ public class Firestore implements FirestoreCallBack {
             userDoc.collection("leaderboards").get().addOnSuccessListener(queryDocumentSnapshots -> {
                 if (queryDocumentSnapshots.isEmpty()){
                     createFirestoreDocuments(userDoc.collection("leaderboards"));
+                    Leaderboard.setFriendWorkoutMap(new HashMap<>());
                 } else {
                     getFirestoreDocuments(queryDocumentSnapshots, "leaderboards");
                 }
-            }).addOnCompleteListener(task -> Leaderboard.setLeaderboardCollection(userDoc.collection("leaderboards")));
+            }).addOnCompleteListener(task -> Log.d("Firestore", "Leaderboard collection set"));
+            Leaderboard.setLeaderboardCollection(userDoc.collection("leaderboards"));
+            FirestoreListener.getInstanceListener().leaderboardListener(true, new FirestoreCallBack() {
+                @Override
+                public void onFirestoreResult(boolean success) {
+                    Log.d("Firestore", "Leaderboard set");
+                    latch.countDown();
+                    Log.d("Firestore", latch.getCount() + "");
+                }
+            });
 
-            latch.countDown();
         });
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Log.d("Firestore", "here");
 
-        callback.onFirestoreResult(true);
-        Toast.makeText(activity, "Login successful.", Toast.LENGTH_SHORT).show();
+
+
+        executorService.execute(() -> {
+            try {
+                Log.d("Firestore", "User object waiting");
+                latch.await();
+                Log.d("Firestore", "User object initialized");
+                Log.d("Firestore", "User: " + latch.getCount() + "");
+                callback.onFirestoreResult(true);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                e.printStackTrace();
+            }
+        });
+
+
     }
 
 
@@ -175,8 +248,6 @@ public class Firestore implements FirestoreCallBack {
             return null;
         }).addOnSuccessListener(aVoid -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
-        UserExercise.setWorkoutMap(new HashMap<>());
-        Leaderboard.setFriendWorkoutMap(new HashMap<>());
     }
 
     private static void getFirestoreDocuments(QuerySnapshot querySnapshot, String collectionName) {

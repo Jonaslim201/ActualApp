@@ -23,8 +23,8 @@ public class Workout extends Exercise implements Comparable<Workout>, Parcelable
     int seconds;
     Calendar dateCal;
 
-    public Workout(String name, float weightLifted, String dateOfWorkout, int numOfReps){
-        super(name);
+    public Workout(String category, String name, float weightLifted, String dateOfWorkout, int numOfReps){
+        super(category, name);
         this.weightLifted = weightLifted;
         this.dateOfWorkout = dateOfWorkout;
         this.numOfReps = numOfReps;
@@ -32,7 +32,7 @@ public class Workout extends Exercise implements Comparable<Workout>, Parcelable
     }
 
     public Workout(Map<String, Object> map){
-        super((String) map.get("name"));
+        super((String) map.get("category"),(String) map.get("name"));
         this.weightLifted = Float.parseFloat(map.get("weightLifted").toString());
         this.dateOfWorkout = (String) map.get("dateOfWorkout");
         this.numOfReps = Integer.parseInt(map.get("numOfReps").toString());
@@ -135,6 +135,9 @@ public class Workout extends Exercise implements Comparable<Workout>, Parcelable
         return this.dateCal().compareTo(o.dateCal());
     }
 
+    protected Calendar getDateCal() {
+        return dateCal;
+    }
 
     public static final Creator<Workout> CREATOR = new Creator<Workout>() {
         @Override

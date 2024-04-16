@@ -50,7 +50,6 @@ public class UserExercise extends User {
         List<Workout> workoutList = workoutMap.get(key);
         if (workoutList == null) {
             workoutList = new ArrayList<>();
-            workoutExists = false;
         } else {
             String dateOfNewWorkout = workout.getDateOfWorkout();
             workoutExists = workoutList.stream().anyMatch(workout1 -> workout1.getDateOfWorkout().equals(dateOfNewWorkout));

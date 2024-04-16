@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:id="@+id/recyclerView">
+        android:id="@+id/feedRecyclerView">
 
     </androidx.recyclerview.widget.RecyclerView>
 

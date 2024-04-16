@@ -2,6 +2,7 @@ package com.example.actualapp.exerciseRelated;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -16,29 +17,30 @@ public class FriendWorkout extends Workout implements Parcelable {
     private String username;
     private int profilePic;
 
-    public FriendWorkout(String name, float weightLifted, String dateOfWorkout, int numOfReps, String id, String username, int profilePic) {
-        super(name, weightLifted, dateOfWorkout, numOfReps);
+    public FriendWorkout(String category, String name, float weightLifted, String dateOfWorkout, int numOfReps, String id, String username, int profilePic) {
+        super(category, name, weightLifted, dateOfWorkout, numOfReps);
         this.username = username;
         this.id = id;
         this.profilePic = profilePic;
     }
 
     public FriendWorkout(Workout workout, String id, String username, int profilePic){
-        super(workout.getName(), workout.getWeightLifted(), workout.getDateOfWorkout(), workout.getNumOfReps());
+        super(workout.getCategory(),workout.getName(), workout.getWeightLifted(), workout.getDateOfWorkout(), workout.getNumOfReps());
+        Log.d("FriendWorkout", workout.getCategory());
         this.username = username;
         this.id = id;
         this.profilePic = profilePic;
     }
 
     public FriendWorkout(Map<String, Object> map){
-        super((String) map.get("name"), Float.parseFloat(map.get("weightLifted").toString()), (String) map.get("dateOfWorkout"), Integer.parseInt(map.get("numOfReps").toString()));
+        super((String) map.get("category"), (String) map.get("name"), Float.parseFloat(map.get("weightLifted").toString()), (String) map.get("dateOfWorkout"), Integer.parseInt(map.get("numOfReps").toString()));
         this.username = (String) map.get("username");
         this.id = (String) map.get("id");
         this.profilePic = R.drawable.baseline_person_24;
     }
 
     public FriendWorkout(){
-        super("", 0, "", 0);
+        super("","", 0, "", 0);
         this.username = "";
         this.id = "";
         this.profilePic = R.drawable.baseline_person_24;

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 //Each exercise has its individual class
 public class Exercise implements Parcelable {
 
+    private String category;
     private String name;
     private String priMuscleGroups;
     private String secMuscleGroups;
@@ -18,7 +19,8 @@ public class Exercise implements Parcelable {
         this.secMuscleGroups = secMuscleGroups;
     }
 
-    public Exercise(String name){
+    public Exercise(String category, String name){
+        this.category = category;
         this.name = name;
     }
 
@@ -42,6 +44,10 @@ public class Exercise implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public String getPriMuscleGroups() {
