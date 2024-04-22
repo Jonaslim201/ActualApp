@@ -37,7 +37,6 @@ public class WorkoutsFragment extends Fragment {
         {
             int id;
             id = root.getResources().getIdentifier("cardView"+exerciseArray[i], "id", requireActivity().getPackageName());
-            Log.d("Debug","ID: "+id);
             but[i] = root.findViewById(id);
             int finalI = i;
 

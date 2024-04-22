@@ -62,7 +62,6 @@ public class UserFriends extends User {
 
     public static void addFriend(DocumentReference newFriend, FirestoreCallBack callBack){
         Log.d("UserFriends", "addFriend: " + newFriend.getId());
-        Log.d("UserFriends", "addFriend: " + friendDocuments.keySet());
         if (friendDocuments == null){
             friendDocuments = new HashMap<>();
         }
@@ -120,7 +119,6 @@ public class UserFriends extends User {
 
     //Received Keys are the usernames of the people who sent the request
     public static void setReceivedFriendRequests(ArrayList<DocumentReference> receivedFriendRequests, FirestoreCallBack callBack) {
-        Log.d("UserFriends", "setReceivedFriendRequests");
         UserFriends.receivedFriendRequests = new HashMap<>();
         UserFriends.receivedFriendRequestsList = new ArrayList<>();
 
@@ -158,9 +156,7 @@ public class UserFriends extends User {
             String idToDelete = receivedFriendRequest.getId();
             UserFriends.receivedFriendRequests.remove(idToDelete);
             Log.d("UserFriends", "deleteFriendRequest: " + idToDelete);
-            Log.d("UserFriends", "deleteFriendRequest: " + UserFriends.receivedFriendRequestsList.size());
             UserFriends.receivedFriendRequestsList.removeIf(friend -> friend.getUsername().equals(idToDelete));
-            Log.d("UserFriends", "deleteFriendRequest: " + UserFriends.receivedFriendRequestsList.size());
             callBack.onFirestoreResult(true);
         }
     }

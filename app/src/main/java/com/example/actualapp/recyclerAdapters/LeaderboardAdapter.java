@@ -29,7 +29,6 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     public void setLeaderboard(ArrayList<FriendWorkout> leaderboard) {
         this.leaderboard = leaderboard;
-        Log.d("leaderboardAdapter", this.leaderboard.toString());
     }
 
     @NonNull

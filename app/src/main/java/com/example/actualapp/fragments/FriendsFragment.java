@@ -158,9 +158,7 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
     public void onAcceptButtonClick(Friend friend) {
         Log.d("FriendRequests", "Accept button clicked");
         friendList.add(friend);
-        Log.d("FriendRequests", friendList.toString());
         friendRequests.remove(friend);
-        Log.d("FriendRequests", friendRequests.toString());
 
         if (friendListAdapter != null) {
             if (friendList.isEmpty()){
@@ -197,11 +195,9 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
                     FriendFirestore.removeFriendRequest(newFriend, new FirestoreCallBack() {
                         @Override
                         public void onFirestoreResult(boolean success) {
-                            Log.d("FriendRequests", "Firestore result: " + success);
                             FriendFirestore.acceptFriendRequest(newFriend, new FirestoreCallBack() {
                                 @Override
                                 public void onFirestoreResult(boolean success) {
-                                    Log.d("FriendRequests", "Firestore result: " + success);
                                     if (success){
                                         Toast.makeText(getContext(), "Added successfully!", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -225,7 +221,6 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
         friendRequests.remove(friend);
 
         if (friendRequestsAdapter != null) {
-            Log.d("FriendRequests", friendRequests.toString());
             if (friendRequests.isEmpty()){
                 dialog.dismiss();
             } else {

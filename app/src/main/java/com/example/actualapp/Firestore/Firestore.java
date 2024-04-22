@@ -72,13 +72,6 @@ public class Firestore implements FirestoreCallBack {
                     .setUserDoc(userDoc).build();
         }
 
-//        executorService.execute(() -> {
-//            AccessToken accessToken = new AccessToken();
-//            final String token = accessToken.getAccessToken();
-//            Log.d("Firestore", "Token: " + token);
-//        });
-
-
         executorService.execute(() -> {
             HomeFragment.initializeFriendWorkouts();
             FirestoreListener.getInstanceListener().feedListener(true, success -> {
@@ -111,8 +104,6 @@ public class Firestore implements FirestoreCallBack {
                 } else {
                     ArrayList<DocumentReference> friendsList = (ArrayList<DocumentReference>) userDocument.getFoundDocument().get("friends");
                     Map<String, Object> friendsRequests = (Map<String, Object>) userDocument.getFoundDocument().get("friendRequests");
-                    Log.d("Firestore", userDoc.getPath());
-                    Log.d("Firestore", "friendsList: " + friendsList);
 
                     if (friendsRequests != null && !friendsRequests.isEmpty()){
                         ArrayList<DocumentReference> sentRequests = (ArrayList<DocumentReference>) friendsRequests.get("sent");
@@ -261,7 +252,6 @@ public class Firestore implements FirestoreCallBack {
         initializeDatabase(activity);
         Query check = db.collection("appUsers").whereEqualTo("username", username);
         check.get().addOnCompleteListener(task -> {
-            Log.d("Debug", "Entered onComplete");
             if (!task.isSuccessful()){
                 Log.d("Debug", "Task was not successful");
                 return;

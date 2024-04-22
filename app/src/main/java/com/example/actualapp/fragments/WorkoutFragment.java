@@ -1,7 +1,6 @@
 package com.example.actualapp.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +83,6 @@ public class WorkoutFragment extends Fragment {
             this.exerciseName = args.getString("exerciseName");
             this.category = args.getString("category");
             this.workoutRecords = args.getParcelableArrayList("workoutRecords");
-            Log.d("workoutFragment", "onCreateView: " + exerciseName + " " + category);
         }
 
         if(workoutRecords != null && !workoutRecords.isEmpty()){
@@ -121,7 +119,6 @@ public class WorkoutFragment extends Fragment {
             if (workoutRecords.get(i).getWeightLifted()>maxWeight){
                 maxWeight = workoutRecords.get(i).getWeightLifted();
             }
-            Log.d("workoutFragment", workoutRecords.get(i).dateCal().getTime().toString());
             dataPoints[i]=new DataPoint(workoutRecords.get(i).dateCal().getTime(),workoutRecords.get(i).getWeightLifted());
         }
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);

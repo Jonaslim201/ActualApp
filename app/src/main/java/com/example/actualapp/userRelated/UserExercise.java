@@ -56,10 +56,8 @@ public class UserExercise extends User {
         }
 
         if (!workoutExists) {
-            Log.d("UserExercise", "addWorkout:" + workoutList.size());
             workoutList.add(workout);
             workoutMap.put(key, workoutList);
-            Log.d("UserExercise", "afteraddWorkout:" + workoutMap.get(key).size());
             ExerciseFirestore.insertWorkout(key.getCategory(), workout, firestoreCallBack);
         }
     }

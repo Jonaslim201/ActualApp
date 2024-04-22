@@ -94,7 +94,6 @@ public class FirestoreListener extends Firestore{
     }
 
     public void feedListener(Boolean initializing, FirestoreCallBack callBack){
-        Log.d("FeedListener", "start listen");
 
         addListener(db.collection("appUsers").document(User.getUsername()).collection("feed").document("feed").addSnapshotListener((amendedValue, error) -> {
             if (error != null){
@@ -105,7 +104,6 @@ public class FirestoreListener extends Firestore{
             } else {
                 Log.d("FeedListener", "start listen succeeded");
                 if(amendedValue != null && amendedValue.exists() && amendedValue.contains("actualFeed")){
-                    Log.d("FeedListener", "amendedFeed found");
                     List<Object> workouts = (List<Object>) amendedValue.get("actualFeed");
                     if (workouts != null && !workouts.isEmpty() && workouts.size() != HomeFragment.getFriendWorkouts().size()){
                         HomeFragment.setFriendWorkouts((ArrayList<Object>) workouts, new FirestoreCallBack() {
@@ -137,11 +135,9 @@ public class FirestoreListener extends Firestore{
 
     //Firestore Listener for Friend Requests
     public void friendReqListener(Boolean initializing, FirestoreCallBack callBack){
-        Log.d("FriendReqFirestore", "start listen");
 
         //Add a listener for the friend requests of the user
         addListener(db.collection("appUsers").document(User.getUsername()).addSnapshotListener((amendedValue, error) -> {
-            Log.d("FriendReqFirestore", "start listen");
             if (error != null){
                 Log.d("FriendReqFirestore", "Failed to listen.");
                 if (initializing) {
@@ -156,17 +152,14 @@ public class FirestoreListener extends Firestore{
                     Map<String, Object> friendRequests = (Map<String, Object>) amendedValue.get("friendRequests");
 
                     ArrayList<DocumentReference> newReceivedFriendRequests = (ArrayList<DocumentReference>) friendRequests.get("received");
-                    Log.d("FriendReqFirestore", "newReceivedFriendRequests: " + newReceivedFriendRequests.size());
 
                     if (newReceivedFriendRequests != null && !newReceivedFriendRequests.isEmpty() &&
                             (UserFriends.getReceivedFriendRequests() == null || newReceivedFriendRequests.size() > UserFriends.getReceivedFriendRequests().size())){
-                        Log.d("FriendReqFirestore", "newReceivedFriendRequests: " + newReceivedFriendRequests.size());
+
                         UserFriends.setReceivedFriendRequests(newReceivedFriendRequests, new FirestoreCallBack() {
                             @Override
                             public void onFirestoreResult(boolean success) {
-                                Log.d("FriendReqFirestore", UserFriends.getReceivedFriendRequests().toString());
                                 if (success && friendRequestListener != null){
-                                    Log.d("FriendReqFirestore", "onFriendRequestChanged");
                                     friendRequestListener.onFriendRequestChanged();
                                 }
 
@@ -193,7 +186,6 @@ public class FirestoreListener extends Firestore{
 
     //Firestore Listener for Friends
     public void friendsListener(Boolean initializing, FirestoreCallBack callBack){
-        Log.d("FriendFirestore", "start listen");
 
         //Add a listener for the friends of the user
         addListener(db.collection("appUsers").document(User.getUsername()).addSnapshotListener((amendedValue, error) -> {
@@ -211,9 +203,6 @@ public class FirestoreListener extends Firestore{
                     //Get the friends array of the user
                     List<DocumentReference> friends = (List<DocumentReference>) amendedValue.get("friends");
 
-
-                    Log.d("FriendFirestore", "friends: " + friends.size());
-                    Log.d("FriendFirestore", "UserFriends: " + UserFriends.getFriend().size());
                     if (friends != null && !friends.isEmpty() && friends.size() > UserFriends.getFriendDocuments().size()){
                         Log.d("UserFriends", "Calling setDocuments from listener");
                         UserFriends.setFriendDocuments((ArrayList<DocumentReference>) friends, new FirestoreCallBack() {
@@ -228,12 +217,6 @@ public class FirestoreListener extends Firestore{
                                 }
                             }
                         });
-//                        for (DocumentReference friendDoc : friends) {
-//                            if (friendDoc != null){
-//                                Log.d("FriendFirestore", "friendDoc: " + friendDoc.getId());
-//                                UserFriends.setFriendDocuments((ArrayList<DocumentReference>) friends);
-//                            }
-//                        }
                     } else {
                         if (initializing){
                             callBack.onFirestoreResult(true);
@@ -248,7 +231,6 @@ public class FirestoreListener extends Firestore{
 
     //Firestore Listener for Leaderboard
     public void leaderboardListener(Boolean initializing, FirestoreCallBack callBack){
-        Log.d("FirestoreListener", "start listen");
         CountDownLatch internalLatch = new CountDownLatch(ExerciseFirestore.getExerciseArray().length);
         ExecutorService executorService = Executors.newFixedThreadPool(ExerciseFirestore.getExerciseArray().length);
 

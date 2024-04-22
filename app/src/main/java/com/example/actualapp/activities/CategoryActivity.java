@@ -2,7 +2,6 @@ package com.example.actualapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -11,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.MainActivity;
+import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Exercise;
 import com.example.actualapp.exerciseRelated.ExerciseCallBack;
@@ -49,10 +48,8 @@ public class CategoryActivity extends AppCompatActivity {
     //Sets content view and initializes XML elements
     private void startActivity() {
         setContentView(R.layout.category_activity);
-        Log.d("Document", exercises.toString());
 
-
-        //RecyclerView bs
+        //RecyclerView setup
         RecyclerView view = findViewById(R.id.recyclerView);
         ExerciseRecyclerAdapter adapter = new ExerciseRecyclerAdapter(exercises, CategoryActivity.this, category);
 

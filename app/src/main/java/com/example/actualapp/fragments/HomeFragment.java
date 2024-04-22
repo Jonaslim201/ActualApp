@@ -1,7 +1,6 @@
 package com.example.actualapp.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +58,6 @@ public class HomeFragment extends Fragment {
     }
 
     public static void setFriendWorkouts(ArrayList<Object> feedWorkouts, FirestoreCallBack callBack) {
-        Log.d("FriendWorkouts", "Setting friend workouts");
         CountDownLatch latch = new CountDownLatch(feedWorkouts.size());
         for (Object o: feedWorkouts){
             if (o instanceof Map){

@@ -34,10 +34,8 @@ public class Leaderboard {
             Log.d("Leaderboard", "null");
             return null;
         } else {
-            Log.d("Leaderboard", Objects.requireNonNull(friendWorkoutMap.get(key)).toString());
             ArrayList<FriendWorkout> friendWorkouts = (ArrayList<FriendWorkout>) friendWorkoutMap.get(key);
             Collections.sort(Objects.requireNonNull(friendWorkouts), new FriendWorkout.weightComparator());
-            Log.d("Leaderboard", friendWorkouts.toString());
             return friendWorkouts;
         }
     }
@@ -62,7 +60,6 @@ public class Leaderboard {
         CountDownLatch internalLatch = new CountDownLatch(newRecord.size());
 
         for (Object value : newRecord.values()) {
-            Log.d("Leaderboard", value.toString());
             if (value instanceof Map) {
                 FriendWorkout friendWorkout = new FriendWorkout((Map<String, Object>) value);
                 Objects.requireNonNull(friendWorkoutMap.get(key)).add(friendWorkout);

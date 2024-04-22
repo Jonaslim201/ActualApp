@@ -88,7 +88,6 @@ public class ProfileFragment extends Fragment {
     }
 
     void updateToFirestore() {
-        // Assuming you have a Firestore database reference
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("users").document(User.getId());
 

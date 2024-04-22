@@ -158,8 +158,8 @@ public class ExerciseFirestore extends Firestore{
     public static void addedFriendLeaderboard(DocumentReference newFriendDoc, String acceptedId){
 
         //List of the collection references to update,
-        // the first one is the new friend's workout collection,
-        // the second is the user's workout collection
+        //the first one is the new friend's workout collection,
+        //the second is the user's workout collection
         List<CollectionReference> collectionReferences = new ArrayList<>();
         collectionReferences.add(newFriendDoc.collection("workouts"));
         collectionReferences.add(UserExercise.getWorkoutsDoc());
