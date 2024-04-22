@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.example.actualapp.Firestore.FirestoreListener;
 import com.example.actualapp.Firestore.LeaderboardChangeListener;
@@ -189,8 +188,7 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
             @Override
             public void onClick(View v) {
                 profileButton.setBackground(getDrawable(R.drawable.circular_button));
-                startActivity(new Intent(ExerciseActivity.this, OldFeedActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+                Log.d("ExerciseActivity", "onClick: Profile Button Clicked");
             }
         });
 

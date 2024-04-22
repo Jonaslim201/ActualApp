@@ -58,6 +58,7 @@ public class LoadingButton{
             @Override
             public void run() {
                 progressButton.doneLoadingAnimation(fillColor, bitmap);
+                revert(2000L);
             }
         }, doneTime);
     }

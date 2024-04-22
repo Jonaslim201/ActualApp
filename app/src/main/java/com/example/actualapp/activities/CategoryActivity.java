@@ -2,6 +2,7 @@ package com.example.actualapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.actualapp.Firestore.ExerciseFirestore;
 import com.example.actualapp.MainActivity;
-import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.R;
 import com.example.actualapp.exerciseRelated.Exercise;
 import com.example.actualapp.exerciseRelated.ExerciseCallBack;
@@ -79,8 +79,7 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 profileButton.setBackground(getDrawable(R.drawable.circular_button));
-                startActivity(new Intent(CategoryActivity.this, OldFeedActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+                Log.d("CategoryActivity", "onClick: Profile Button Clicked");
             }
         });
     }
