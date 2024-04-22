@@ -38,9 +38,9 @@ public class Firestore implements FirestoreCallBack {
     @SuppressLint("StaticFieldLeak")
     static FirebaseFirestore db;
     static holdDocument userDocument;
-    public static ExecutorService executorService = Executors.newFixedThreadPool(4);
+    static ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-    Firestore(){
+    protected Firestore(){
 
     }
 

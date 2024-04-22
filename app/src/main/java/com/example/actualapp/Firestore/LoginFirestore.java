@@ -8,6 +8,9 @@ import java.util.Map;
 
 public class LoginFirestore extends Firestore{
 
+    private LoginFirestore(){
+    }
+
     //Start of Login function
     public static void loginUser(Map<String, Object> user, Context activity, FirestoreCallBack callback) {
         Log.d("Debug", "Checking user");

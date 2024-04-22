@@ -10,7 +10,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class FriendFirestore extends Firestore {
 
-    FriendFirestore(){
+    private FriendFirestore(){
 
     }
 

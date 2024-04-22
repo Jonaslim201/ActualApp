@@ -15,7 +15,7 @@ public class User {
     //Reference to the user document in Firestore
     private static DocumentReference userDoc;
 
-    public User(UserBuilder userBuilder){
+    private User(UserBuilder userBuilder){
         User.username = userBuilder.username;
         User.password = userBuilder.password;
         User.email = userBuilder.email;
@@ -32,10 +32,6 @@ public class User {
 
     public static DocumentReference getUserDoc() {
         return userDoc;
-    }
-
-    public static String getPassword(){
-        return password;
     }
 
     public static String getUsername() {
@@ -57,37 +53,30 @@ public class User {
         private String id;
         private DocumentReference userDoc;
 
-        public UserBuilder() {
-        }
+        public UserBuilder() {}
 
         public UserBuilder setUsername(String username) {
             this.username = username;
-            return this;
-        }
+            return this;}
 
         public UserBuilder setPassword(String password) {
             this.password = password;
-            return this;
-        }
+            return this;}
 
         public UserBuilder setEmail(String email) {
             this.email = email;
-            return this;
-        }
+            return this;}
 
         public UserBuilder setId(String id) {
             this.id = id;
-            return this;
-        }
+            return this;}
 
         public UserBuilder setUserDoc(DocumentReference userDoc) {
             this.userDoc = userDoc;
-            return this;
-        }
+            return this;}
 
         public User build(){
             return new User(this);
         }
     }
-
 }

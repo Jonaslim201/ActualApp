@@ -11,6 +11,9 @@ import java.util.Random;
 
 public class RegisterFirestore extends Firestore{
 
+    private RegisterFirestore(){
+    }
+
     //Start of register user function
     public static void registerUser(Map<String, Object> user, Context activity, FirestoreCallBack callback){
         //Check if the username exists

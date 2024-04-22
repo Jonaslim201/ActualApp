@@ -97,6 +97,7 @@ public class FriendsFragment extends Fragment implements FriendRequestsAdapter.O
             @Override
             public void onClick(View v) {
                 TextInputEditText friendId = customLayout.findViewById(R.id.friendId);
+
                 FriendFirestore.sendFriendRequest(Objects.requireNonNull(friendId.getText()).toString(), new FirestoreCallBack() {
                     @Override
                     public void onFirestoreResult(boolean success) {

@@ -241,8 +241,13 @@ public class ExerciseActivity extends AppCompatActivity implements WorkoutFragme
         String dateTime = format1.format(dateNow);
 
         //Creates a new Workout instance
-        Workout workout = new Workout(category, exerciseName, weightLifted, dateTime, numOfReps);
-
+//        Workout workout = new Workout(category, exerciseName, weightLifted, dateTime, numOfReps);
+        Workout workout = new Workout.WorkoutBuilder().setCategory(category)
+                .setName(exerciseName)
+                .setWeightLifted(weightLifted)
+                .setDateOfWorkout(dateTime)
+                .setNumOfReps(numOfReps)
+                .Build();
         UserExercise.addWorkout(key, workout, new FirestoreCallBack() {
             @Override
             public void onFirestoreResult(boolean success) {

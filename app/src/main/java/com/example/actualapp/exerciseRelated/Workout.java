@@ -49,24 +49,12 @@ public class Workout extends Exercise implements Comparable<Workout>, Parcelable
         return weightLifted;
     }
 
-    public void setWeightLifted(float weightLifted) {
-        this.weightLifted = weightLifted;
-    }
-
     public int getNumOfReps() {
         return numOfReps;
     }
 
-    public void setNumOfReps(int numOfReps) {
-        this.numOfReps = numOfReps;
-    }
-
     public String getDateOfWorkout() {
         return dateOfWorkout;
-    }
-
-    public void setDateOfWorkout(String dateOfWorkout) {
-        this.dateOfWorkout = dateOfWorkout;
     }
 
     public String DayMonthYear() {
@@ -164,5 +152,42 @@ public class Workout extends Exercise implements Comparable<Workout>, Parcelable
         dest.writeFloat(weightLifted);
         dest.writeString(dateOfWorkout);
         dest.writeInt(numOfReps);
+    }
+
+    public static class WorkoutBuilder {
+        private String category;
+        private String name;
+        private float weightLifted;
+        private String dateOfWorkout;
+        private int numOfReps;
+
+        public WorkoutBuilder setCategory(String category) {
+            this.category = category;
+            return this;
+        }
+
+        public WorkoutBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public WorkoutBuilder setWeightLifted(float weightLifted) {
+            this.weightLifted = weightLifted;
+            return this;
+        }
+
+        public WorkoutBuilder setDateOfWorkout(String dateOfWorkout) {
+            this.dateOfWorkout = dateOfWorkout;
+            return this;
+        }
+
+        public WorkoutBuilder setNumOfReps(int numOfReps) {
+            this.numOfReps = numOfReps;
+            return this;
+        }
+
+        public Workout Build(){
+            return new Workout(category, name, weightLifted, dateOfWorkout, numOfReps);
+        }
     }
 }

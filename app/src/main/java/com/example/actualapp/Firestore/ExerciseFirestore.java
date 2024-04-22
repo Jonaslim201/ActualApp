@@ -33,6 +33,9 @@ public class ExerciseFirestore extends Firestore{
             "Abs", "Back", "Biceps", "Calf", "Chest", "Legs", "Forearms", "Legs", "Shoulders", "Triceps"
     };
 
+    private ExerciseFirestore(){
+    }
+
     //Getting the list of exercises for a category for the RecycleView
     public static void getExercises(Context activity, String category, ExerciseCallBack exerciseCallBack){
         initializeDatabase(activity);

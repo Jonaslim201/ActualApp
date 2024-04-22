@@ -17,13 +17,6 @@ public class FriendWorkout extends Workout implements Parcelable {
     private String username;
     private int profilePic;
 
-    public FriendWorkout(String category, String name, float weightLifted, String dateOfWorkout, int numOfReps, String id, String username, int profilePic) {
-        super(category, name, weightLifted, dateOfWorkout, numOfReps);
-        this.username = username;
-        this.id = id;
-        this.profilePic = profilePic;
-    }
-
     public FriendWorkout(Workout workout, String id, String username, int profilePic){
         super(workout.getCategory(),workout.getName(), workout.getWeightLifted(), workout.getDateOfWorkout(), workout.getNumOfReps());
         Log.d("FriendWorkout", workout.getCategory());
@@ -33,7 +26,7 @@ public class FriendWorkout extends Workout implements Parcelable {
     }
 
     public FriendWorkout(Map<String, Object> map){
-        super((String) map.get("category"), (String) map.get("name"), Float.parseFloat(map.get("weightLifted").toString()), (String) map.get("dateOfWorkout"), Integer.parseInt(map.get("numOfReps").toString()));
+        super(map);
         this.username = (String) map.get("username");
         this.id = (String) map.get("id");
         this.profilePic = R.drawable.baseline_person_24;
@@ -46,17 +39,10 @@ public class FriendWorkout extends Workout implements Parcelable {
         this.profilePic = R.drawable.baseline_person_24;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getUsername() {
         return username;

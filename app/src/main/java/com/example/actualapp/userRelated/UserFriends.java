@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.actualapp.OldFeedActivity;
 import com.example.actualapp.Firestore.FirestoreCallBack;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -152,7 +151,6 @@ public class UserFriends extends User {
                 }
             });
         }
-        OldFeedActivity.updateFriendRequest();
     }
 
     public static void deleteFriendRequest(DocumentReference receivedFriendRequest, FirestoreCallBack callBack){
